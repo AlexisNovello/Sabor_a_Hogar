@@ -6,9 +6,55 @@
     <title>sabor-a-hogar</title>
   </head>
   <body>
-    <div id="app"></div>
-
-    <h1 class="m-8 text-4xl font-bold text-red-600">Sabor a Hogar</h1>
+    <!-- Header Sabor a Hogar -->
+    <header class="bg-red-600 text-white">
+      <div class="max-w-6xl mx-auto p-6">
+        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+      </div>
+    </header>
+    <main class="max-w-6xl mx-auto p-6">
+      <!-- Buscar productos -->
+      <h2 class="text-2xl font-semibold mt-6">Nuestra carta</h2>
+      <div class="mt-6 flex items-end gap-3">
+        <div>
+          <label class="block text-sm font-semibold" for="buscar-productos"
+            >Buscar productos</label
+          >
+          <input
+            class="mt-2 h-10 w-96 border border-gray-400 rounded-md px-4 py-2"
+            id="buscar-productos"
+            type="search"
+            placeholder="Ej: hamburguesa"
+          />
+        </div>
+        <button
+          class="h-10 bg-red-600 rounded-md px-4 py-2 font-semibold text-white"
+          type="button"
+        >
+          Buscar
+        </button>
+      </div>
+      <!-- Lista de Productos -->
+      <div id="lista-productos" class="mt-6 grid grid-cols-3 gap-6"></div>
+      <!-- Plantilla de cada producto -->
+      <template id="plantilla-producto">
+        <article class="border rounded-lg p-4 flex flex-col">
+          <img data-foto class="w-full h-64 object-cover" />
+          <h3 data-nombre class="text-xl font-bold mt-4"></h3>
+          <p data-descripcion class="mt-4"></p>
+          <p data-precio class="mt-auto pt-4 text-xl font-bold"></p>
+          <p
+            data-estado
+            class="self-start mt-4 text-sm bg-green-100 text-green-800 rounded-md inline-block px-3 py-1"
+          ></p>
+          <button
+            class="mt-4 w-full bg-red-600 rounded-md py-2 font-semibold text-white"
+          >
+            Agregar
+          </button>
+        </article>
+      </template>
+    </main>
 
     <script type="module" src="/src/main.js"></script>
   </body>
