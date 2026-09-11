@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>guardarplato</title>
+</head>
+<body>
+    <!-- Header Sabor a Hogar - Administrador con Volver al Menu arriba a la derecha -->
+    <header class="bg-red-600 text-white">
+    <div class="max-w-6xl mx-auto p-6 flex justify-between items-center">
+        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+        <button class="h-10 bg-red-700 hover:bg-red-800 rounded-md px-4 py-2 font-semibold text-white cursor-pointer transition-colors" type="button">
+        Volver al Inicio
+        </button>
+    </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6 flex flex-col items-center">
+    <!-- Tarjeta del Formulario Central -->
+    <div class="border rounded-lg p-8 max-w-md w-full mt-6 flex flex-col gap-5 bg-white">
+        
+        <!-- Item para subir archivos (Imagen del plato, etc) -->
+        <div>
+        <label class="block text-sm font-semibold mb-2">Imagen del plato</label>
+        <div class="border-2 border-dashed border-gray-400 rounded-md p-6 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors">
+            <input type="file" id="subir-foto" class="hidden" accept="image/*" />
+            <label for="subir-foto" class="text-sm font-semibold text-gray-600 cursor-pointer text-center">
+            Hace clic para subir un archivo
+            </label>
+        </div>
+        </div>
+
+        <!-- Campo Nombre -->
+        <div>
+        <label class="block text-sm font-semibold" for="nombre-plato">Nombre</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="nombre-plato"
+            type="text"
+            placeholder="Ej: Pizza Especial"
+        />
+        </div>
+
+        <!-- Campo Precio -->
+        <div>
+        <label class="block text-sm font-semibold" for="precio-plato">Precio</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="precio-plato"
+            type="text"
+            placeholder="Ej: 6500"
+        />
+        </div>
+
+        <!-- Boton Seleccionar Ingredientes -->
+        <div class="pt-2">
+        <button
+            class="w-full h-10 border border-gray-400 rounded-md px-4 py-2 font-semibold text-black bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors"
+            type="button"
+        >
+            Seleccionar ingredientes
+        </button>
+        </div>
+
+        <!-- Botones para volver a la izquierda, Guardar a la derecha -->
+        <div class="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center w-full">
+        <button
+            class="h-10 border border-gray-400 rounded-md px-6 py-2 font-semibold text-black cursor-pointer hover:bg-gray-100 transition-colors"
+            type="button"
+        >
+            Volver
+        </button>
+        
+        <button
+            class="h-10 bg-red-600 rounded-md px-6 py-2 font-semibold text-white cursor-pointer hover:bg-red-700 transition-colors"
+            type="button"
+        >
+            Guardar
+        </button>
+        </div>
+
+    </div>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
+

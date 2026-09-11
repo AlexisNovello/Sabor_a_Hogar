@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>paneladministrador</title>
+</head>
+<body>
+    <!-- Header Sabor a Hogar - Administrador -->
+    <header class="bg-red-600 text-white">
+    <div class="max-w-6xl mx-auto p-6 flex justify-between items-center">
+        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+    </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6">
+    <!-- Titulo de la sección -->
+    <h2 class="text-2xl font-semibold mt-6">Panel de administrador</h2>
+    <p class="text-gray-600 text-sm mt-1">Selecciona una opcion para administrar.</p>
+    
+    <!-- Grilla de Opciones -->
+    <div class="mt-8 grid grid-cols-3 gap-6">
+        
+        <!-- Opcion 1: Control de Carta -->
+        <article class="border border-gray-400 rounded-lg p-6 flex flex-col justify-between items-start gap-4">
+        <div>
+            <h3 class="text-xl font-bold">Control de Carta</h3>
+            <p class="mt-2 text-gray-600 text-sm">Modifica los platos de la carta, precios, descripciones y disponibilidad de las comidas.</p>
+        </div>
+        <button
+            class="mt-4 w-full h-10 bg-red-600 rounded-md py-2 font-semibold text-white cursor-pointer hover:bg-red-700"
+            type="button"
+        >
+            Gestionar Carta
+        </button>
+        </article>
+
+        <!-- Opcion 2: Control de Stock -->
+        <article class="border border-gray-400 rounded-lg p-6 flex flex-col justify-between items-start gap-4">
+        <div>
+            <h3 class="text-xl font-bold">Control de Stock</h3>
+            <p class="mt-2 text-gray-600 text-sm">Controla las materias primas del rubro, ingredientes y alertas de faltas de insumos.</p>
+        </div>
+        <button
+            class="mt-4 w-full h-10 bg-red-600 rounded-md py-2 font-semibold text-white cursor-pointer hover:bg-red-700"
+            type="button"
+        >
+            Gestionar el Stock
+        </button>
+        </article>
+
+        <!-- Opcion 3: Control de Usuarios -->
+        <article class="border border-gray-400 rounded-lg p-6 flex flex-col justify-between items-start gap-4">
+        <div>
+            <h3 class="text-xl font-bold">Control de Usuarios</h3>
+            <p class="mt-2 text-gray-600 text-sm">Administra las cuentas de tus empleados, permisos de cocineros, repartidores y administradores.</p>
+        </div>
+        <button
+            class="mt-4 w-full h-10 bg-red-600 rounded-md py-2 font-semibold text-white cursor-pointer hover:bg-red-700"
+            type="button"
+        >
+            Gestionar Usuarios
+        </button>
+        </article>
+
+    </div>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
