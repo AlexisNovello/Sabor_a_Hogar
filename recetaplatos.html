@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>recetadeplatos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <!-- Header Sabor a Hogar - Administrador -->
+    <header class="bg-red-600 text-white">
+    <div class="max-w-6xl mx-auto p-6 flex justify-between items-center">
+        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+        <button class="h-10 bg-red-700 hover:bg-red-800 rounded-md px-4 py-2 font-semibold text-white cursor-pointer" type="button">
+        Volver al Inicio
+        </button>
+    </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6">
+    <!-- Titulo de Comandas arriba de las fotos -->
+    <h2 class="text-3xl font-bold mt-6 text-gray-900">Comandas</h2>
+    <p class="text-gray-600 text-sm mt-1">Monitorear los platos activos que se estan cocinando en tiempo real.</p>
+    
+    <!-- Contenedor principal interactivo con flechas -->
+    <div class="mt-6 flex items-center gap-4">
+        
+        <!-- Flecha Izquierda -->
+        <button class="h-12 w-12 border border-gray-400 bg-white hover:bg-gray-100 rounded-md flex items-center justify-center text-gray-800 font-black text-xl cursor-pointer shadow-sm transition-colors" type="button" title="Anteriores">
+        <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <!-- Las 3 Comandas Activas -->
+        <div id="lista-comandas-admin" class="grid grid-cols-3 gap-6 flex-grow">
+        
+        <!-- Comanda 1: Hamburguesa -->
+        <article class="border rounded-lg p-4 flex flex-col bg-white shadow-sm cursor-grab active:cursor-grabbing">
+            <span class="text-xs font-bold text-gray-500 tracking-wider">Cliente: 78239481</span>
+            <img src="" class="w-full h-64 object-cover rounded-md mt-2" alt="Hamburguesa Completa" />
+            <h3 class="text-xl font-bold mt-4">Hamburguesa Completa</h3>
+            
+            <!-- Receta / Ingredientes detallados -->
+            <div class="mt-2 text-sm text-gray-700 bg-gray-50 p-3 rounded-md border border-gray-200">
+            <span class="block font-semibold text-gray-900 mb-1">Receta:</span>
+            <p>Carne picada 200g, pan frica 1u, queso muzzarella 50g, lechuga 15g, tomate 2 rodajas.</p>
+            </div>
+
+            <button class="mt-4 w-full bg-green-600 text-white rounded-md py-2 font-semibold cursor-pointer hover:bg-green-700 transition-colors" type="button">
+            Listo
+            </button>
+        </article>
+
+        <!-- Comanda 2: Pizza Comun etc -->
+        <article class="border rounded-lg p-4 flex flex-col bg-white shadow-sm cursor-grab active:cursor-grabbing">
+            <span class="text-xs font-bold text-gray-500 tracking-wider">Cliente: 45645646</span>
+            <img src="" class="w-full h-64 object-cover rounded-md mt-2" alt="Pizza de Muzzarella" />
+            <h3 class="text-xl font-bold mt-4">Pizza de Muzzarella</h3>
+            
+            <!-- Receta / Ingredientes -->
+            <div class="mt-2 text-sm text-gray-700 bg-gray-50 p-3 rounded-md border border-gray-200">
+            <span class="block font-semibold text-gray-900 mb-1">Receta:</span>
+            <p>Levadura 25g, sal 10g, agua 275ml, harina 0000 500g, muzzarella 250g, salsa de tomate 100ml.</p>
+            </div>
+
+            <button class="mt-4 w-full bg-green-600 text-white rounded-md py-2 font-semibold cursor-pointer hover:bg-green-700 transition-colors" type="button">
+            Listo
+            </button>
+        </article>
+
+        <!-- Comanda 3: Empanadas -->
+        <article class="border rounded-lg p-4 flex flex-col bg-white shadow-sm cursor-grab active:cursor-grabbing">
+            <span class="text-xs font-bold text-gray-500 tracking-wider">Cliente: 12938472</span>
+            <img src="" class="w-full h-64 object-cover rounded-md mt-2" alt="Empanadas Criollas" />
+            <h3 class="text-xl font-bold mt-4">Empanadas Criollas</h3>
+            
+            <!-- Receta / Ingredientes detallados -->
+            <div class="mt-2 text-sm text-gray-700 bg-gray-50 p-3 rounded-md border border-gray-200">
+            <span class="block font-semibold text-gray-900 mb-1">Receta:</span>
+            <p>Tapas de empanada 3u, carne cortada a cuchillo 120g, cebolla 100g, condimento criollo 5g.</p>
+            </div>
+
+            <button class="mt-4 w-full bg-green-600 text-white rounded-md py-2 font-semibold cursor-pointer hover:bg-green-700 transition-colors" type="button">
+            Listo
+            </button>
+        </article>
+
+        </div>
+
+        <!-- Flecha Derecha -->
+        <button class="h-12 w-12 border border-gray-400 bg-white hover:bg-gray-100 rounded-md flex items-center justify-center text-gray-800 font-black text-xl cursor-pointer shadow-sm transition-colors" type="button" title="Siguientes">
+        <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+    </div>
+    
+    <!-- La instruccion de arrastre abajo -->
+    <div class="mt-8 border-t border-gray-300 pt-4 text-center">
+        <p class="text-gray-500 font-medium italic text-base">Pulse y arrastre para ordenarlas.</p>
+    </div>
+
+    <template id="plantilla-item-comanda-admin">
+        <article class="border rounded-lg p-4 flex flex-col bg-white shadow-sm">
+        <span data-num-cliente class="text-xs font-bold text-gray-500 tracking-wider"></span>
+        <img data-foto class="w-full h-64 object-cover rounded-md mt-2" />
+        <h3 data-nombre class="text-xl font-bold mt-4"></h3>
+        <div class="mt-2 text-sm text-gray-700 bg-gray-50 p-3 rounded-md border border-gray-200">
+            <span class="block font-semibold text-gray-900 mb-1">Receta:</span>
+            <p data-receta-ingredientes></p>
+        </div>
+        <button class="mt-4 w-full bg-green-600 text-white rounded-md py-2 font-semibold" type="button">
+            Listo
+        </button>
+        </article>
+    </template>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
+
+

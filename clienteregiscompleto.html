@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>registroclientecompleto</title>
+</head>
+<body>
+    <!-- Header Sabor a Hogar -->
+    <header class="bg-red-600 text-white">
+    <div class="max-w-6xl mx-auto p-6">
+        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+    </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6 flex flex-col items-center">
+    <!-- Contenedor del Formulario -->
+    <div class="border rounded-lg p-8 max-w-lg w-full mt-12 flex flex-col gap-4 bg-white">
+        <h2 class="text-2xl font-semibold text-center mb-2">¿Donde te lo llevamos?</h2>
+        
+        <!-- Campo Calle -->
+        <div>
+        <label class="block text-sm font-semibold" for="calle">Calle</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="calle"
+            type="text"
+            placeholder="Ej: Recreo Sur"
+        />
+        </div>
+
+        <!-- Campo Altura -->
+        <div>
+        <label class="block text-sm font-semibold" for="altura">Altura</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="altura"
+            type="text"
+            placeholder="Ej: 1450"
+        />
+        </div>
+
+        <!-- Campo Piso -->
+        <div>
+        <label class="block text-sm font-semibold" for="piso">Piso</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="piso"
+            type="text"
+            placeholder="Ej: 3ro B"
+        />
+        </div>
+
+        <!-- Campo de identificacion -->
+        <div>
+        <label class="block text-sm font-semibold" for="identificacion">¿Como te identificamos?</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="identificacion"
+            type="text"
+            placeholder="Ej: Rejas negras, timbre que no anda, no tenes techo"
+        />
+        </div>
+
+        <!-- Boton de Registrarse -->
+        <button
+        class="mt-4 h-10 bg-red-600 rounded-md px-4 py-2 font-semibold text-white cursor-pointer hover:bg-red-700 w-full"
+        type="button"
+        >
+        Registrarse
+        </button>
+    </div>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>

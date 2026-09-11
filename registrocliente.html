@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>registrodecliente</title>
+</head>
+<body>
+    <!-- Header Sabor a Hogar -->
+    <header class="bg-red-600 text-white">
+    <div class="max-w-6xl mx-auto p-6">
+        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+    </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6 flex flex-col items-center">
+    <!-- Contenedor del Formulario -->
+    <div class="border rounded-lg p-8 max-w-lg w-full mt-8 flex flex-col gap-4 bg-white">
+        <h2 class="text-2xl font-semibold text-center mb-2">Rellenar con tus datos</h2>
+        
+        <!-- Campo Nombre -->
+        <div>
+        <label class="block text-sm font-semibold" for="nombre">Nombre</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="nombre"
+            type="text"
+            placeholder="Ej: Agustin el mas capito"
+        />
+        </div>
+
+        <!-- Campo Apellido -->
+        <div>
+        <label class="block text-sm font-semibold" for="apellido">Apellido</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="apellido"
+            type="text"
+            placeholder="Ej: Almazan"
+        />
+        </div>
+
+        <!-- Campo Correo Electronico -->
+        <div>
+        <label class="block text-sm font-semibold" for="correo">Correo electronico</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="correo"
+            type="email"
+            placeholder="Ej: mr.rodolfo@email.com"
+        />
+        </div>
+
+        <!-- Campo DNI -->
+        <div>
+        <label class="block text-sm font-semibold" for="dni">DNI</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="dni"
+            type="text"
+            placeholder="Ej: 40123456"
+        />
+        </div>
+
+        <!-- Campo Telefono -->
+        <div>
+        <label class="block text-sm font-semibold" for="telefono">Telefono</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="telefono"
+            type="tel"
+            placeholder="Ej: 3421234567"
+        />
+        </div>
+
+        <!-- Campo Contraseña -->
+        <div>
+        <label class="block text-sm font-semibold" for="contrasena">Contraseña</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="contrasena"
+            type="password"
+            placeholder="Escribi tu contraseña"
+        />
+        </div>
+
+        <!-- Campo Repetir Contraseña -->
+        <div>
+        <label class="block text-sm font-semibold" for="repetir-contrasena">Repetir contraseña</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="repetir-contrasena"
+            type="password"
+            placeholder="Repetir contraseña"
+        />
+        </div>
+
+        <!-- Boton de Siguiente -->
+        <button
+        class="mt-4 h-10 bg-red-600 rounded-md px-4 py-2 font-semibold text-white cursor-pointer hover:bg-red-700 w-full"
+        type="button"
+        >
+        Siguiente
+        </button>
+    </div>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
+

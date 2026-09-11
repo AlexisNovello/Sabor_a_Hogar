@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>controldeentregas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <!-- Header Sabor a Hogar - Administrador -->
+    <header class="bg-red-600 text-white">
+    <div class="max-w-6xl mx-auto p-6 flex justify-between items-center">
+        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+        <button class="h-10 bg-red-700 hover:bg-red-800 rounded-md px-4 py-2 font-semibold text-white cursor-pointer" type="button">
+        Volver al Inicio
+        </button>
+    </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6">
+    <!-- Titulo del panel de despachos -->
+    <h2 class="text-3xl font-bold mt-6 text-gray-900">Entregas Pendientes</h2>
+    <p class="text-gray-600 text-sm mt-1">Gestion de los cobros y cierres de pedidos activos.</p>
+    
+    <!-- Contenedor principal -->
+    <div class="mt-6 flex items-center gap-4">
+        
+        <!-- Flecha Izquierda -->
+        <button class="h-12 w-12 border border-gray-400 bg-white hover:bg-gray-100 rounded-md flex items-center justify-center text-gray-800 font-black text-xl cursor-pointer shadow-sm transition-colors" type="button" title="Anteriores">
+        <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
+        <!-- Grilla de 3 Ordenes de Entrega -->
+        <div id="lista-entregas-admin" class="grid grid-cols-3 gap-6 flex-grow">
+        
+        <!-- Pedido 1 -->
+        <article class="border rounded-lg p-5 flex flex-col bg-white shadow-sm">
+            <span class="text-sm font-bold text-red-600 tracking-wider">Cliente: Alexis Novello</span>
+            
+            <!-- Informacion del Pedido -->
+            <div class="mt-4 flex flex-col gap-2 text-base text-gray-700 bg-gray-50 p-4 rounded-md border border-gray-200 flex-grow">
+            <p><span class="font-bold text-gray-900">Domicilio:</span> Arroyo leyes, calle 62 SN/Ruta 1</p>
+            <p><span class="font-bold text-gray-900">Cobrar:</span> Efectivo</p>
+            <p class="text-lg mt-2 pt-2 border-t border-gray-200"><span class="font-bold text-gray-900">Monto:</span> <span class="font-extrabold text-red-600">$13.300</span></p>
+            </div>
+
+            <!-- Boton de Finalizado -->
+            <button class="mt-4 w-full bg-green-600 text-white rounded-md py-2.5 font-semibold cursor-pointer hover:bg-green-700 transition-colors" type="button">
+            Finalizado
+            </button>
+        </article>
+
+        <!-- Pedido 2 -->
+        <article class="border rounded-lg p-5 flex flex-col bg-white shadow-sm">
+            <span class="text-sm font-bold text-red-600 tracking-wider">Cliente: Agustin Almazan</span>
+            
+            <div class="mt-4 flex flex-col gap-2 text-base text-gray-700 bg-gray-50 p-4 rounded-md border border-gray-200 flex-grow">
+            <p><span class="font-bold text-gray-900">Domicilio:</span> Recreo Sur</p>
+            <p><span class="font-bold text-gray-900">Cobrar:</span> Tarjeta</p>
+            <p class="text-lg mt-2 pt-2 border-t border-gray-200"><span class="font-bold text-gray-900">Monto:</span> <span class="font-extrabold text-red-600">$6.000</span></p>
+            </div>
+
+            <button class="mt-4 w-full bg-green-600 text-white rounded-md py-2.5 font-semibold cursor-pointer hover:bg-green-700 transition-colors" type="button">
+            Finalizado
+            </button>
+        </article>
+
+        <!-- Pedido 3 -->
+        <article class="border rounded-lg p-5 flex flex-col bg-white shadow-sm">
+            <span class="text-sm font-bold text-red-600 tracking-wider">Cliente: Mariana Lopez</span>
+            
+            <div class="mt-4 flex flex-col gap-2 text-base text-gray-700 bg-gray-50 p-4 rounded-md border border-gray-200 flex-grow">
+            <p><span class="font-bold text-gray-900">Domicilio:</span> Urquiza 745</p>
+            <p><span class="font-bold text-gray-900">Cobrar:</span> Mercado pago</p>
+            <p class="text-lg mt-2 pt-2 border-t border-gray-200"><span class="font-bold text-gray-900">Monto:</span> <span class="font-extrabold text-red-600">$8.800</span></p>
+            </div>
+
+            <button class="mt-4 w-full bg-green-600 text-white rounded-md py-2.5 font-semibold cursor-pointer hover:bg-green-700 transition-colors" type="button">
+            Finalizado
+            </button>
+        </article>
+
+        </div>
+
+        <!-- Flecha Derecha -->
+        <button class="h-12 w-12 border border-gray-400 bg-white hover:bg-gray-100 rounded-md flex items-center justify-center text-gray-800 font-black text-xl cursor-pointer shadow-sm transition-colors" type="button" title="Siguientes">
+        <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+    </div>
+    
+    <!-- Boton inferior para desplegar el codigo QR -->
+    <div class="mt-8 border-t border-gray-300 pt-6 flex justify-center">
+        <button
+        class="h-11 border border-gray-400 bg-white text-black font-semibold rounded-md px-6 py-2 cursor-pointer hover:bg-gray-50 transition-colors shadow-sm"
+        type="button"
+        >
+        Click para mostrar el QR
+        </button>
+    </div>
+
+    <template id="plantilla-item-entrega-admin">
+        <article class="border rounded-lg p-5 flex flex-col bg-white shadow-sm">
+        <span data-nombre-cliente class="text-sm font-bold text-red-600 tracking-wider"></span>
+        <div class="mt-4 flex flex-col gap-2 text-base text-gray-700 bg-gray-50 p-4 rounded-md border border-gray-200 flex-grow">
+            <p><span class="font-bold text-gray-900">Domicilio:</span> <span data-domicilio-cliente></span></p>
+            <p><span class="font-bold text-gray-900">Cobrar:</span> <span data-metodo-cobro></span></p>
+            <p class="text-lg mt-2 pt-2 border-t border-gray-200"><span class="font-bold text-gray-900">Monto:</span> <span data-monto-total class="font-extrabold text-red-600"></span></p>
+        </div>
+        <button class="mt-4 w-full bg-green-600 text-white rounded-md py-2.5 font-semibold" type="button">
+            Finalizado
+        </button>
+        </article>
+    </template>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
+
+

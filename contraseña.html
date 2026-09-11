@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>usuariocontraseña</title>
+</head>
+<body>
+    <!-- Header Sabor a Hogar -->
+    <header class="bg-red-600 text-white">
+    <div class="max-w-6xl mx-auto p-6">
+        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+    </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6 flex flex-col items-center">
+    <!-- Formulario Central -->
+    <div class="border rounded-lg p-8 max-w-md w-full mt-12 flex flex-col gap-4">
+        <h2 class="text-2xl font-semibold text-center mb-2">Rellena con tus datos</h2>
+        
+        <!-- Campo Correo Electronico -->
+        <div>
+        <label class="block text-sm font-semibold" for="correo-electronico">Correo electronico</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="correo-electronico"
+            type="email"
+            placeholder="Ej: admin@saborahogar.com"
+        />
+        </div>
+
+        <!-- Campo Contraseña -->
+        <div>
+        <label class="block text-sm font-semibold" for="contrasena">Contraseña</label>
+        <input
+            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
+            id="contrasena"
+            type="password"
+            placeholder="Ingresa tu contraseña"
+        />
+        </div>
+
+        <!-- Boton de Entrar -->
+        <button
+        class="mt-4 h-10 bg-red-600 rounded-md px-4 py-2 font-semibold text-white cursor-pointer hover:bg-red-700"
+        type="button"
+        >
+        Siguiente
+        </button>
+    </div>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
