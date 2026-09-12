@@ -5,18 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>sabor-a-hogar</title>
     <!-- Script de Tailwind para visualizar el diseño inmediatamente -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   </head>
   <body>
     <!-- Header Sabor a Hogar con el Carrito arriba a la derecha -->
     <header class="bg-red-600 text-white">
       <div class="max-w-6xl mx-auto p-6 flex justify-between items-center">
         <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
-        
+
         <!-- Botón con el icono del carrito -->
-        <button class="h-10 w-10 bg-red-700 hover:bg-red-800 rounded-md font-semibold text-white flex items-center justify-center text-lg cursor-pointer transition-colors" type="button" id="btn-carrito-header" title="Ver Carrito">
+        <a
+          href="/carrito.html"
+          class="h-10 w-10 bg-red-700 hover:bg-red-800 rounded-md font-semibold text-white flex items-center justify-center text-lg cursor-pointer transition-colors"
+          id="btn-carrito-header"
+          title="Ver Carrito"
+        >
           <i class="fa-solid fa-shopping-cart"></i>
-        </button>
+        </a>
       </div>
     </header>
     <main class="max-w-6xl mx-auto p-6">
@@ -55,7 +65,8 @@
             class="self-start mt-4 text-sm bg-green-100 text-green-800 rounded-md inline-block px-3 py-1"
           ></p>
           <button
-            class="mt-4 w-full bg-red-600 rounded-md py-2 font-semibold text-white"
+            data-agregar
+            class="mt-4 w-full bg-red-600 rounded-md py-2 font-semibold text-white cursor-pointer hover:bg-red-700"
           >
             Agregar
           </button>
@@ -66,4 +77,3 @@
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
-
