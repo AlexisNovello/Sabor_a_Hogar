@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Permite que la pantalla se adapte correctamente a celulares. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Crear cuenta | Sabor a Hogar</title>
+  </head>
+
+  <body class="min-h-screen bg-red-50">
+    <header class="bg-red-600 text-white shadow-md">
+      <div class="mx-auto max-w-6xl p-6">
+        <a href="/bienvenidos.html" class="text-3xl font-bold">
+          Sabor a Hogar
+        </a>
+      </div>
+    </header>
+
+    <main class="mx-auto flex max-w-6xl justify-center p-6">
+      <!--
+        Usamos un único formulario para las dos etapas.
+        La primera sección muestra los datos personales.
+        La segunda sección, inicialmente oculta, muestra la dirección.
+      -->
+      <form
+        id="formulario-registro"
+        class="mt-8 w-full max-w-lg rounded-lg border bg-white p-8 shadow-md"
+      >
+        <!-- Primera etapa: datos personales. -->
+        <section id="paso-datos">
+          <h1 class="mb-2 text-center text-2xl font-bold">
+            Creá tu cuenta
+          </h1>
+
+          <p class="mb-6 text-center text-gray-600">
+            Primero necesitamos tus datos personales.
+          </p>
+
+          <div class="flex flex-col gap-4">
+            <div>
+              <label class="block text-sm font-semibold" for="nombre">
+                Nombre
+              </label>
+
+              <input
+                id="nombre"
+                name="nombre"
+                class="mt-2 h-11 w-full rounded-md border border-gray-400 px-4"
+                type="text"
+                autocomplete="given-name"
+                placeholder="Ejemplo: Agustín"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold" for="apellido">
+                Apellido
+              </label>
+
+              <input
+                id="apellido"
+                name="apellido"
+                class="mt-2 h-11 w-full rounded-md border border-gray-400 px-4"
+                type="text"
+                autocomplete="family-name"
+                placeholder="Ejemplo: Almazán"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold" for="email">
+                Correo electrónico
+              </label>
+
+              <input
+                id="email"
+                name="email"
+                class="mt-2 h-11 w-full rounded-md border border-gray-400 px-4"
+                type="email"
+                autocomplete="email"
+                placeholder="nombre@correo.com"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold" for="dni">
+                DNI
+              </label>
+
+              <input
+                id="dni"
+                name="dni"
+                class="mt-2 h-11 w-full rounded-md border border-gray-400 px-4"
+                type="text"
+                inputmode="numeric"
+                minlength="7"
+                maxlength="8"
+                placeholder="Ejemplo: 40123456"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold" for="telefono">
+                Teléfono
+              </label>
+
+              <input
+                id="telefono"
+                name="telefono"
+                class="mt-2 h-11 w-full rounded-md border border-gray-400 px-4"
+                type="tel"
+                autocomplete="tel"
+                placeholder="Ejemplo: 3421234567"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold" for="password">
+                Contraseña
+              </label>
+
+              <input
+                id="password"
+                name="password"
+                class="mt-2 h-11 w-full rounded-md border border-gray-400 px-4"
+                type="password"
+                autocomplete="new-password"
+                minlength="8"
+                placeholder="Mínimo 8 caracteres"
+                required
+              />
+            </div>
+
+            <div>
+              <label
+                class="block text-sm font-semibold"
+                for="repetir-password"
+              >
+                Repetir contraseña
+              </label>
+
+              <input
+                id="repetir-password"
+                name="repetirPassword"
+                class="mt-2 h-11 w-full rounded-md border border-gray-400 px-4"
+                type="password"
+                autocomplete="new-password"
+                minlength="8"
+                placeholder="Escribí nuevamente la contraseña"
+                required
+              />
+            </div>
+          </div>
+
+          <!--
+            Este botón no registra todavía al usuario.
+            En el siguiente paso sólo mostrará la sección de dirección.
+          -->
+          <button
+            id="boton-siguiente"
+            class="mt-6 h-11 w-full rounded-md bg-red-600 font-semibold text-white hover:bg-red-700"
+            type="button"
+          >
+            Siguiente
+          </button>
+        </section>
+
+        <!--
+          Segunda etapa:
+          La clase "hidden" hace que inicialmente no sea visible.
+        -->
+        <section id="paso-direccion" class="hidden">
+          <h1 class="mb-2 text-center text-2xl font-bold">
+            ¿Dónde te lo llevamos?
+          </h1>
+
+          <p class="mb-6 text-center text-gray-600">
+            Esta dirección se usará cuando elijas delivery.
+          </p>
+
+          <div class="flex flex-col gap-4">
+            <div>
+              <label class="block text-sm font-semibold" for="calle">
+                Calle
+              </label>
+
+              <input
+                id="calle"
+                name="calle"
+                class="mt-2 h-11 w-full rounded-md border border-gray-400 px-4"
+                type="text"
+                autocomplete="street-address"
+                placeholder="Ejemplo: Recreo Sur"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold" for="altura">
+                Altura
+              </label>
+
+              <input
+                id="altura"
+                name="altura"
+                class="mt-2 h-11 w-full rounded-md border border-gray-400 px-4"
+                type="text"
+                inputmode="numeric"
+                placeholder="Ejemplo: 1450"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold" for="piso">
+                Piso o departamento
+              </label>
+
+              <input
+                id="piso"
+                name="piso"
+                class="mt-2 h-11 w-full rounded-md border border-gray-400 px-4"
+                type="text"
+                placeholder="Opcional: 3° B"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold" for="referencia">
+                Referencia
+              </label>
+
+              <input
+                id="referencia"
+                name="referencia"
+                class="mt-2 h-11 w-full rounded-md border border-gray-400 px-4"
+                type="text"
+                placeholder="Ejemplo: portón negro"
+              />
+            </div>
+          </div>
+
+          <div class="mt-6 grid grid-cols-2 gap-3">
+            <!-- Permite regresar a la primera etapa sin perder los datos. -->
+            <button
+              id="boton-volver"
+              class="h-11 rounded-md border border-red-600 font-semibold text-red-600 hover:bg-red-50"
+              type="button"
+            >
+              Volver
+            </button>
+
+            <!--
+              Este sí será el botón que enviará el formulario.
+              Todavía falta programar su comunicación con Supabase.
+            -->
+            <button
+              id="boton-registrarse"
+              class="h-11 rounded-md bg-red-600 font-semibold text-white hover:bg-red-700"
+              type="submit"
+            >
+              Registrarse
+            </button>
+          </div>
+        </section>
+
+        <!-- Aquí mostraremos errores y confirmaciones sin usar alert(). -->
+        <p
+          id="mensaje-registro"
+          class="mt-5 hidden rounded-md p-3 text-center text-sm"
+          role="status"
+          aria-live="polite"
+        ></p>
+
+        <p class="mt-6 text-center text-sm text-gray-600">
+          ¿Ya tenés una cuenta?
+
+          <a href="/login.html" class="font-semibold text-red-600 underline">
+            Iniciar sesión
+          </a>
+        </p>
+      </form>
+    </main>
+
+    <!-- Este archivo controlará las etapas y llamará a Supabase. -->
+    <script type="module" src="/src/pages/registro.js"></script>
+  </body>
+</html>
