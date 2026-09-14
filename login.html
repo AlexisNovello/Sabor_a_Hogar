@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Permite que el formulario se adapte a celulares. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Iniciar sesión | Sabor a Hogar</title>
+  </head>
+
+  <body class="min-h-screen bg-red-50">
+    <!--
+      Este encabezado se reutilizó de contraseña.html.
+      Cambiamos el título y agregamos un enlace a la bienvenida.
+    -->
+    <header class="bg-red-600 text-white shadow-md">
+      <div class="mx-auto max-w-6xl p-6">
+        <a href="/bienvenidos.html" class="text-3xl font-bold">
+          Sabor a Hogar
+        </a>
+      </div>
+    </header>
+
+    <main class="mx-auto flex max-w-6xl justify-center p-6">
+      <form
+        id="formulario-login"
+        class="mt-12 w-full max-w-md rounded-lg border bg-white p-8 shadow-md"
+      >
+        <h1 class="mb-2 text-center text-2xl font-bold">
+          Iniciar sesión
+        </h1>
+
+        <p class="mb-6 text-center text-gray-600">
+          Ingresá y hacé tu pedido.
+        </p>
+
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="block text-sm font-semibold" for="email">
+              Correo electrónico
+            </label>
+
+            <input
+              id="email"
+              name="email"
+              class="mt-2 h-11 w-full rounded-md border border-gray-400 px-4"
+              type="email"
+              autocomplete="email"
+              placeholder="nombre@correo.com"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold" for="password">
+              Contraseña
+            </label>
+
+            <input
+              id="password"
+              name="password"
+              class="mt-2 h-11 w-full rounded-md border border-gray-400 px-4"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Ingresá tu contraseña"
+              required
+            />
+          </div>
+        </div>
+
+        <!--
+          Este botón enviará el formulario.
+          Mientras Supabase responde será desactivado desde login.js.
+        -->
+        <button
+          id="boton-login"
+          class="mt-6 h-11 w-full rounded-md bg-red-600 font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+          type="submit"
+        >
+          Ingresar
+        </button>
+
+        <!--
+          Mostrará errores o confirmaciones sin utilizar alert().
+          aria-live permite que lectores de pantalla anuncien el mensaje.
+        -->
+        <p
+          id="mensaje-login"
+          class="mt-5 hidden rounded-md p-3 text-center text-sm"
+          role="status"
+          aria-live="polite"
+        ></p>
+
+        <p class="mt-6 text-center text-sm text-gray-600">
+          ¿Todavía no tenés una cuenta?
+
+          <a
+            href="/registro.html"
+            class="font-semibold text-red-600 underline"
+          >
+            Registrate
+          </a>
+        </p>
+      </form>
+    </main>
+
+    <!--
+      Esta pantalla usa su propio JavaScript.
+      No debe utilizar main.js porque main.js pertenece a la carta.
+    -->
+    <script type="module" src="/src/pages/login.js"></script>
+  </body>
+</html>
