@@ -1,5 +1,4 @@
 import "./style.css";
-import { obtenerSesion } from './services/auth.js'
 
 // trae los productos guardados en el navegador
 const carritoGuardado = localStorage.getItem("carrito");
@@ -9,9 +8,6 @@ console.table(carrito);
 
 const lista = document.querySelector("#lista-carrito");
 const plantilla = document.querySelector("#plantilla-item-carrito");
-
-// Buscamos el botón que permite avanzar a la entrega.
-const botonSiguiente = document.querySelector('#boton-siguiente')
 
 // mensaje si el carrito esta vacio
 if (carrito.length === 0) {
@@ -89,54 +85,6 @@ function actualizarTotal() {
 
   const totalCarrito = document.querySelector("#total-carrito");
   totalCarrito.textContent = formatoPrecio.format(total);
-
-  /*
-  * El botón sólo queda habilitado cuando el carrito
-  * contiene al menos un producto.
-  */
-  botonSiguiente.disabled = carrito.length === 0
 }
-
-/**
- * Comprueba la sesión antes de avanzar a la entrega.
- */
-botonSiguiente.addEventListener('click', async () => {
-  // Evitamos nuevos clics mientras consultamos Supabase.
-  botonSiguiente.disabled = true
-  botonSiguiente.textContent = 'Comprobando...'
-
-  try {
-    const sesion = await obtenerSesion()
-
-    if (sesion) {
-      /*
-       * Si hay una sesión activa, el usuario puede
-       * continuar normalmente hacia la entrega.
-       */
-      window.location.href = '/entrega.html'
-      return
-    }
-
-    /*
-     * Si no hay sesión, recordamos que el usuario quería
-     * continuar hacia entrega.html.
-     *
-     * sessionStorage conserva este dato únicamente
-     * durante la pestaña actual del navegador.
-     */
-    sessionStorage.setItem(
-      'paginaDespuesLogin',
-      '/entrega.html',
-    )
-
-    // Enviamos al visitante a iniciar sesión.
-    window.location.href = '/login.html'
-  } catch (error) {
-    console.error('No se pudo comprobar la sesión:', error)
-
-    botonSiguiente.disabled = false
-    botonSiguiente.textContent = 'Siguiente'
-  }
-})
 
 actualizarTotal();
