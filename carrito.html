@@ -25,25 +25,61 @@
       <!-- Lista de Productos en el Carrito -->
       <div id="lista-carrito" class="mt-6 grid grid-cols-3 gap-6"></div>
 
-      <!-- Resumen de cuenta con el Total y del Boton de siguiente -->
-      <div
-        class="mt-8 border-t border-gray-300 pt-6 flex flex-col items-end gap-3"
-      >
+    <!-- Método de entrega y resumen del pedido -->
+    <div
+      class="mt-8 border-t border-gray-300 pt-6 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-end sm:gap-12">
+
+      <fieldset class="min-w-0">
+        <legend class="text-xl font-semibold text-gray-600 mb-3">
+          Método de entrega
+        </legend>
+
+        <div class="flex flex-col gap-4 text-xl">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="metodo-entrega"
+              value="domicilio"
+              class="h-5 w-5 accent-red-600"
+              disabled
+            />
+            Envío a domicilio
+          </label>
+
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="metodo-entrega"
+              value="retiro"
+              class="h-5 w-5 accent-red-600"
+              checked
+            />
+            Retiro en el local
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="flex flex-col items-end gap-3 shrink-0">
         <div class="text-right">
-          <span class="block text-sm font-semibold text-gray-600">Total: </span>
+          <span class="block text-xl font-semibold text-gray-600">
+            Total:
+          </span>
           <p
             id="total-carrito"
             class="text-3xl font-extrabold text-gray-900 mt-1"
           ></p>
         </div>
+
         <button
-          disabled
-          class="h-10 bg-red-600 rounded-md px-6 py-2 font-semibold text-white cursor-pointer hover:bg-red-700 mt-2"
+          id="confirmar-pedido"
+          class="h-10 bg-red-600 rounded-md px-6 py-2
+                font-semibold text-white hover:bg-red-700"
           type="button"
         >
-          Siguiente
+          Confirmar pedido
         </button>
       </div>
+    </div>
 
       <template id="plantilla-item-carrito">
         <article class="border rounded-lg p-4 flex flex-col">
