@@ -1,4 +1,5 @@
 import "./style.css";
+import { crearPedido } from "./services/pedidos.js";
 
 // trae los productos guardados en el navegador
 const carritoGuardado = localStorage.getItem("carrito");
@@ -88,3 +89,34 @@ function actualizarTotal() {
 }
 
 actualizarTotal();
+
+const botonConfirmar = document.querySelector("#confirmar-pedido");
+
+botonConfirmar.addEventListener("click", async () => {
+  if (carrito.length === 0) {
+    alert("Agregá productos al carrito antes de confirmar.");
+    return;
+  }
+
+  botonConfirmar.disabled = true;
+  botonConfirmar.textContent = "Guardando...";
+
+  try {
+    const idPedido = await crearPedido(carrito);
+
+    //limpiar el carrito solamente despuees de guardar
+    localStorage.removeItem("carrito");
+    carrito.length = 0;
+
+    lista.textContent = "Tu carrito está vacío.";
+    actualizarTotal();
+
+    alert(`Pedido n.º ${idPedido} registrado correctamente.`);
+  } catch (error) {
+    console.error("Error al guardar el pedido:", error);
+    alert("No se pudo guardar el pedido. Tus productos siguen en el carrito.");
+  } finally {
+    botonConfirmar.disabled = false;
+    botonConfirmar.textContent = "Confirmar pedido";
+  }
+});
