@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comandas</title>
+  </head>
+  <body>
+    <!-- Header Sabor a Hogar - Administrador -->
+    <header class="bg-red-600 text-white">
+      <div class="max-w-6xl mx-auto p-6 flex justify-between items-center">
+        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+        <button
+          class="h-10 bg-red-700 hover:bg-red-800 rounded-md px-4 py-2 font-semibold text-white cursor-pointer"
+          type="button"
+        >
+          Volver al Inicio
+        </button>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6">
+      <!-- Titulo de Comandas -->
+      <h2 class="text-3xl font-bold mt-6 text-gray-900">Comandas</h2>
+      <p class="text-gray-600 text-sm mt-1">
+        Pedidos pendientes y en preparación, ordenados por llegada.
+      </p>
+
+      <div class="mt-6 flex items-center gap-4">
+        <!-- Contenedor de comandas -->
+        <div
+          id="lista-comandas-admin"
+          class="grid grid-cols-3 gap-6 grow"
+        ></div>
+      </div>
+
+      <template id="plantilla-item-comanda-admin">
+        <article
+          class="border rounded-lg p-4 flex flex-col gap-3 bg-white shadow-sm"
+        >
+          <h3 data-numero class="text-xl font-bold"></h3>
+
+          <p data-estado class="text-sm text-gray-600"></p>
+
+          <ul data-productos class="list-disc pl-5 space-y-2"></ul>
+
+          <button
+            data-listo
+            class="mt-auto rounded-md py-2 font-semibold disabled:opacity-50 cursor-pointer"
+            type="button"
+            disabled
+          >
+            Listo
+          </button>
+        </article>
+      </template>
+    </main>
+
+    <script type="module" src="/src/comandas.js"></script>
+  </body>
+</html>
