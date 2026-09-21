@@ -59,12 +59,8 @@ for (const producto of productos) {
     }
 
     localStorage.setItem("carrito", JSON.stringify(carrito)); // guardamos los datos
-    console.table(carrito);
   });
 
   // inserto cada plantilla a la lista
   lista.append(copia);
 }
-
-console.log("Consulta realizada correctamente");
-console.table(productos);

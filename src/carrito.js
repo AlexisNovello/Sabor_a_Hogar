@@ -5,8 +5,6 @@ import { crearPedido } from "./services/pedidos.js";
 const carritoGuardado = localStorage.getItem("carrito");
 const carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
 
-console.table(carrito);
-
 const lista = document.querySelector("#lista-carrito");
 const plantilla = document.querySelector("#plantilla-item-carrito");
 
