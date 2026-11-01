@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>carrito</title>
+    <title>Tu carrito | Sabor a Hogar</title>
+    <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
     <!-- Header Sabor a Hogar -->
@@ -25,61 +26,60 @@
       <!-- Lista de Productos en el Carrito -->
       <div id="lista-carrito" class="mt-6 grid grid-cols-3 gap-6"></div>
 
-    <!-- Método de entrega y resumen del pedido -->
-    <div
-      class="mt-8 border-t border-gray-300 pt-6 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-end sm:gap-12">
+      <!-- Método de entrega y resumen del pedido -->
+      <div
+        class="mt-8 border-t border-gray-300 pt-6 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-end sm:gap-12"
+      >
+        <fieldset class="min-w-0">
+          <legend class="text-xl font-semibold text-gray-600 mb-3">
+            Método de entrega
+          </legend>
 
-      <fieldset class="min-w-0">
-        <legend class="text-xl font-semibold text-gray-600 mb-3">
-          Método de entrega
-        </legend>
+          <div class="flex flex-col gap-4 text-xl">
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input
+                type="radio"
+                name="metodo-entrega"
+                value="domicilio"
+                class="h-5 w-5 accent-red-600"
+                disabled
+              />
+              Envío a domicilio
+            </label>
 
-        <div class="flex flex-col gap-4 text-xl">
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input
-              type="radio"
-              name="metodo-entrega"
-              value="domicilio"
-              class="h-5 w-5 accent-red-600"
-              disabled
-            />
-            Envío a domicilio
-          </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input
+                type="radio"
+                name="metodo-entrega"
+                value="retiro"
+                class="h-5 w-5 accent-red-600"
+                checked
+              />
+              Retiro en el local
+            </label>
+          </div>
+        </fieldset>
 
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input
-              type="radio"
-              name="metodo-entrega"
-              value="retiro"
-              class="h-5 w-5 accent-red-600"
-              checked
-            />
-            Retiro en el local
-          </label>
+        <div class="flex flex-col items-end gap-3 shrink-0">
+          <div class="text-right">
+            <span class="block text-xl font-semibold text-gray-600">
+              Total:
+            </span>
+            <p
+              id="total-carrito"
+              class="text-3xl font-extrabold text-gray-900 mt-1"
+            ></p>
+          </div>
+
+          <button
+            id="confirmar-pedido"
+            class="h-10 bg-red-600 rounded-md px-6 py-2 font-semibold text-white hover:bg-red-700"
+            type="button"
+          >
+            Confirmar pedido
+          </button>
         </div>
-      </fieldset>
-
-      <div class="flex flex-col items-end gap-3 shrink-0">
-        <div class="text-right">
-          <span class="block text-xl font-semibold text-gray-600">
-            Total:
-          </span>
-          <p
-            id="total-carrito"
-            class="text-3xl font-extrabold text-gray-900 mt-1"
-          ></p>
-        </div>
-
-        <button
-          id="confirmar-pedido"
-          class="h-10 bg-red-600 rounded-md px-6 py-2
-                font-semibold text-white hover:bg-red-700"
-          type="button"
-        >
-          Confirmar pedido
-        </button>
       </div>
-    </div>
 
       <template id="plantilla-item-carrito">
         <article class="border rounded-lg p-4 flex flex-col">

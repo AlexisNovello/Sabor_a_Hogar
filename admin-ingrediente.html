@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agregar ingrediente | Sabor a Hogar</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+
+  <body>
+    <header class="bg-red-600 text-white">
+      <div class="max-w-6xl mx-auto p-6 flex justify-between items-center">
+        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+
+        <a
+          href="admin-stock.html"
+          class="bg-red-700 rounded-md px-4 py-2 font-semibold hover:bg-red-800"
+        >
+          Volver al stock
+        </a>
+      </div>
+    </header>
+
+    <main class="max-w-md mx-auto p-6">
+      <h2 class="text-2xl font-semibold mt-6">Agregar ingrediente</h2>
+
+      <form
+        id="formulario-ingrediente"
+        class="mt-6 border border-gray-400 rounded-lg p-6 flex flex-col gap-5"
+      >
+        <!-- nombre del ingrediente -->
+        <div>
+          <label for="nombre" class="block font-semibold">Nombre</label>
+          <input
+            id="nombre"
+            name="nombre"
+            type="text"
+            placeholder="Ej: Harina"
+            class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2"
+            required
+          />
+        </div>
+
+        <!-- unidad de medida -->
+        <div>
+          <label for="unidad" class="block font-semibold">
+            Unidad de medida
+          </label>
+          <select
+            id="unidad"
+            name="unidad"
+            class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2"
+            required
+          >
+            <option value="">Seleccioná una unidad</option>
+            <option value="g">Gramos</option>
+            <option value="ml">Mililitros</option>
+            <option value="unidades">Unidades</option>
+          </select>
+        </div>
+
+        <!-- cantidad disponible -->
+        <div>
+          <label for="cantidad" class="block font-semibold">
+            Cantidad inicial
+          </label>
+          <input
+            id="cantidad"
+            name="cantidad"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="Ej: 2000"
+            class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="bg-red-600 rounded-md px-4 py-2 font-semibold text-white hover:bg-red-700"
+        >
+          Guardar ingrediente
+        </button>
+      </form>
+    </main>
+    <script type="module" src="/src/ingrediente.js"></script>
+  </body>
+</html>

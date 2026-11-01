@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de stock | Sabor a Hogar</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- Header Sabor a Hogar - Administrador -->
+    <header class="bg-red-600 text-white">
+      <div class="max-w-6xl mx-auto p-6 flex justify-between items-center">
+        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+        <a
+          href="administrador.html"
+          class="h-10 bg-red-700 rounded-md px-4 py-2 font-semibold text-white hover:bg-red-800"
+        >
+          Volver al panel
+        </a>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6">
+      <h2 class="text-2xl font-semibold mt-6">Este es tu Stock Actual</h2>
+      <p class="text-gray-600 text-sm mt-1">
+        Consultá los ingredientes y las cantidades disponibles en el local.
+      </p>
+
+      <p id="mensaje-stock"></p>
+
+      <!-- Tabla de Ingredientes -->
+      <div
+        class="mt-6 border border-gray-400 rounded-lg overflow-hidden bg-white"
+      >
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr
+              class="bg-gray-100 border-b border-gray-400 font-semibold text-gray-700"
+            >
+              <th class="p-4">Ingredientes</th>
+              <th class="p-4">Cantidad</th>
+              <th class="p-4 text-center w-32">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-ingredientes"></tbody>
+        </table>
+      </div>
+
+      <!-- Boton inferior para agregar nuevo ingredientes -->
+      <div class="mt-6 flex justify-start">
+        <a
+          href="admin-ingrediente.html"
+          class="bg-red-600 rounded-md px-4 py-2 font-semibold text-white hover:bg-red-700"
+        >
+          Agregar nuevo ingrediente
+        </a>
+      </div>
+
+      <template id="plantilla-fila-ingrediente">
+        <tr class="border-b border-gray-300">
+          <td data-nombre-ingrediente class="p-4 font-bold"></td>
+          <td data-cantidad-ingrediente class="p-4 text-gray-700"></td>
+          <td class="p-4 flex justify-center gap-2">
+            <button
+              data-sumar
+              class="h-8 w-8 bg-red-600 text-white rounded-md font-extrabold text-lg flex items-center justify-center cursor-pointer"
+              type="button"
+            >
+              +
+            </button>
+            <button
+              data-restar
+              class="h-8 w-8 border border-gray-400 text-black rounded-md font-extrabold text-lg flex items-center justify-center cursor-pointer"
+              type="button"
+            >
+              -
+            </button>
+          </td>
+        </tr>
+      </template>
+    </main>
+    <script type="module" src="/src/stock.js"></script>
+  </body>
+</html>
