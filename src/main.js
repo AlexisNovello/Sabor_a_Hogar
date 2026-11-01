@@ -1,5 +1,3 @@
-import "./style.css";
-
 import { obtenerProductos } from "./services/productos.js";
 
 const productos = await obtenerProductos();

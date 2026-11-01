@@ -1,4 +1,3 @@
-import "./style.css";
 import { crearPedido } from "./services/pedidos.js";
 
 // trae los productos guardados en el navegador

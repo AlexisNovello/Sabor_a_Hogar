@@ -1,4 +1,3 @@
-import "./style.css";
 import { obtenerPedidos, actualizarEstadoPedido } from "./services/pedidos.js";
 
 const pedidos = await obtenerPedidos();
