@@ -1,108 +1,56 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Datos del plato | Sabor a Hogar</title>
-    <link rel="stylesheet" href="/src/style.css" />
-  </head>
-  <body>
-    <!-- Header Sabor a Hogar - Administrador con Volver al Menu arriba a la derecha -->
-    <header class="bg-red-600 text-white">
-      <div class="max-w-6xl mx-auto p-6 flex justify-between items-center">
-        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
-        <a
-          href="admin-carta.html"
-          class="h-10 bg-red-700 rounded-md px-4 py-2 font-semibold text-white hover:bg-red-800"
-        >
-          Volver Atrás
-        </a>
-      </div>
-    </header>
-
-    <main class="max-w-6xl mx-auto p-6 flex flex-col items-center">
-      <!-- Tarjeta del Formulario Central -->
-      <div
-        class="border rounded-lg p-8 max-w-md w-full mt-6 flex flex-col gap-5 bg-white"
-      >
-        <!-- Item para subir archivos (Imagen del plato, etc) -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Datos del plato | Sabor a Hogar</title>
+  <link rel="stylesheet" href="src/style.css" />
+</head>
+<body>
+  <header class="bg-red-600 text-white">
+    <div class="max-w-6xl mx-auto p-6 flex justify-between items-center gap-4">
+      <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+      <a href="admin-carta.html" class="rounded-md bg-red-700 px-4 py-2 font-semibold hover:bg-red-800">Volver a la carta</a>
+    </div>
+  </header>
+  <main class="max-w-6xl mx-auto p-6 flex flex-col items-center">
+    <form id="formulario-plato" class="border rounded-lg p-6 sm:p-8 max-w-lg w-full mt-6 bg-white">
+      <h2 id="titulo-plato" class="text-2xl font-bold mb-6">Añadir plato</h2>
+      <p id="mensaje-plato" class="mb-4 text-sm" role="status" aria-live="polite"></p>
+      <fieldset id="campos-plato" class="flex flex-col gap-5" disabled>
         <div>
-          <label class="block text-sm font-semibold mb-2"
-            >Imagen del plato</label
-          >
-          <div
-            class="border-2 border-dashed border-gray-400 rounded-md p-6 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
-          >
-            <input
-              type="file"
-              id="subir-foto"
-              class="hidden"
-              accept="image/*"
-            />
-            <label
-              for="subir-foto"
-              class="text-sm font-semibold text-gray-600 cursor-pointer text-center"
-            >
-              Hace clic para subir un archivo
-            </label>
+          <p class="block text-sm font-semibold">Imagen del plato</p>
+          <input id="subir-foto" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" aria-label="Seleccionar imagen del plato" />
+          <div class="mt-3 grid grid-cols-2 items-center gap-3">
+            <button id="elegir-foto" type="button" class="h-10 w-full inline-flex items-center justify-center gap-2 rounded-md bg-red-600 px-2 text-sm font-semibold text-white hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:opacity-50 cursor-pointer">
+              <svg aria-hidden="true" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m-5 5 5-5 5 5M4 16v4h16v-4" /></svg>
+              <span id="texto-elegir-foto">Subir imagen</span>
+            </button>
+            <p id="nombre-archivo" class="min-w-0 text-sm text-gray-600 break-words" aria-live="polite">Ningún archivo seleccionado.</p>
           </div>
+          <p id="ayuda-foto" class="mt-1 text-sm text-gray-600"></p>
+          <p id="error-foto" class="mt-2 text-sm text-red-700" role="status"></p>
         </div>
-
-        <!-- Campo Nombre -->
         <div>
-          <label class="block text-sm font-semibold" for="nombre-plato"
-            >Nombre</label
-          >
-          <input
-            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
-            id="nombre-plato"
-            type="text"
-            placeholder="Ej: Pizza Especial"
-          />
+          <label for="nombre-plato" class="block text-sm font-semibold">Nombre</label>
+          <input id="nombre-plato" type="text" required maxlength="150" placeholder="Ej.: Hamburguesa" class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2" />
         </div>
-
-        <!-- Campo Precio -->
         <div>
-          <label class="block text-sm font-semibold" for="precio-plato"
-            >Precio</label
-          >
-          <input
-            class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
-            id="precio-plato"
-            type="text"
-            placeholder="Ej: 6500"
-          />
+          <label for="descripcion-plato" class="block text-sm font-semibold">Descripción</label>
+          <textarea id="descripcion-plato" rows="3" required maxlength="2000" placeholder="Ej.: Hamburguesa completa con lechuga, tomate, queso y papas." class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2"></textarea>
+          <p class="mt-1 text-sm text-gray-600">Se muestra debajo del nombre en la carta.</p>
         </div>
-
-        <!-- Boton Seleccionar Ingredientes -->
-        <div class="pt-2">
-          <button
-            class="w-full h-10 border border-gray-400 rounded-md px-4 py-2 font-semibold text-black bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors"
-            type="button"
-          >
-            Seleccionar ingredientes
-          </button>
+        <div>
+          <label for="precio-plato" class="block text-sm font-semibold">Precio en pesos</label>
+          <input id="precio-plato" type="number" min="0.01" step="0.01" required placeholder="Ej.: 8700" class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2" />
         </div>
-
-        <!-- Botones para volver a la izquierda, Guardar a la derecha -->
-        <div
-          class="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center w-full"
-        >
-          <button
-            class="h-10 border border-gray-400 rounded-md px-6 py-2 font-semibold text-black cursor-pointer hover:bg-gray-100 transition-colors"
-            type="button"
-          >
-            Volver
-          </button>
-
-          <button
-            class="h-10 bg-red-600 rounded-md px-6 py-2 font-semibold text-white cursor-pointer hover:bg-red-700 transition-colors"
-            type="button"
-          >
-            Guardar
-          </button>
+        <div class="mt-2 pt-4 border-t border-gray-200 flex justify-between items-center gap-4">
+          <a href="admin-carta.html" class="border border-gray-400 rounded-md px-6 py-2 font-semibold hover:bg-gray-100">Volver</a>
+          <button id="guardar-plato" type="submit" class="bg-red-600 rounded-md px-6 py-2 font-semibold text-white hover:bg-red-700 disabled:opacity-50">Guardar</button>
         </div>
-      </div>
-    </main>
-  </body>
+      </fieldset>
+    </form>
+  </main>
+  <script type="module" src="src/admin-plato.js"></script>
+</body>
 </html>

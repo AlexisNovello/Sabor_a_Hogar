@@ -1,1 +1,4 @@
 @import "tailwindcss";
+.cantidad-porciones { appearance: textfield; -moz-appearance: textfield; }
+.cantidad-porciones::-webkit-inner-spin-button,
+.cantidad-porciones::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }

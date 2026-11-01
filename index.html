@@ -4,31 +4,39 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Carta digital | Sabor a Hogar</title>
+    <link rel="stylesheet" href="src/style.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
     <!-- Header Sabor a Hogar con el Carrito arriba a la derecha -->
     <header class="bg-red-600 text-white">
-      <div class="max-w-6xl mx-auto p-6 flex justify-between items-center">
+      <div class="max-w-6xl mx-auto p-6 flex flex-col gap-4 xl:flex-row xl:justify-between xl:items-center">
         <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
 
-        <!-- Botón con el icono del carrito -->
-        <a
-          href="/carrito.html"
-          class="h-10 w-10 bg-red-700 hover:bg-red-800 rounded-md font-semibold text-white flex items-center justify-center text-lg cursor-pointer transition-colors"
-          id="btn-carrito-header"
-          title="Ver Carrito"
-        >
-          <i class="fa-solid fa-shopping-cart"></i>
-        </a>
+        <nav aria-label="Cuenta y navegación" class="flex flex-wrap items-center justify-end gap-3">
+<a id="enlace-mis-pedidos" href="mis-pedidos.html" class="hidden h-10 items-center rounded-md bg-red-700 px-4 text-sm font-semibold hover:bg-red-800">Mis pedidos</a>
+          <a href="carrito.html" id="btn-carrito-header" title="Ver carrito" class="inline-flex h-10 items-center gap-2 rounded-md bg-red-700 px-4 text-sm font-semibold hover:bg-red-800">
+            <i class="fa-solid fa-shopping-cart" aria-hidden="true"></i>
+            Carrito
+          </a>
+          <a id="enlace-login" href="login.html" class="hidden h-10 items-center rounded-md bg-white px-4 text-sm font-semibold text-red-600 hover:bg-red-50">Ingresar</a>
+          <div id="datos-sesion" class="hidden flex-wrap items-center justify-end gap-3">
+            <a id="enlace-cocina" href="comandas.html" class="hidden h-10 content-center rounded-md bg-white px-4 text-sm font-semibold text-red-600 hover:bg-red-50">Comandas</a>
+            <a id="enlace-admin" href="administrador.html" class="hidden h-10 items-center content-center rounded-md bg-white px-4 text-sm font-semibold text-red-600 hover:bg-red-50">Administración</a>
+            <div class="flex items-center gap-3 border-l border-white/40 pl-4 ml-1">
+              <span id="nombre-usuario" class="text-sm font-medium"></span>
+              <button id="boton-cerrar-sesion" class="inline-flex h-10 items-center rounded-md border border-white/60 px-3 text-sm font-semibold hover:bg-red-700 disabled:opacity-60" type="button">Cerrar sesión</button>
+            </div>
+          </div>
+        </nav>
       </div>
     </header>
+    <p id="mensaje-sesion" class="mx-auto max-w-6xl px-6 text-sm" role="status" aria-live="polite"></p>
     <main class="max-w-6xl mx-auto p-6">
       <!-- Buscar productos -->
       <h2 class="text-2xl font-semibold mt-6">Nuestra carta</h2>
@@ -64,16 +72,27 @@
             data-estado
             class="self-start mt-4 text-sm bg-green-100 text-green-800 rounded-md inline-block px-3 py-1"
           ></p>
+          <div class="mt-4 flex items-center justify-between gap-3 text-sm font-semibold">
+            Porciones para agregar
+            <span class="inline-flex h-10 items-center rounded-md border border-gray-400 overflow-hidden bg-white">
+                <button data-restar type="button" aria-label="Disminuir porciones" class="h-full w-9 flex items-center justify-center hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"><svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 6-6 6 6 6" /></svg></button>
+                <input data-cantidad type="number" min="1" step="1" value="1" aria-label="Cantidad de porciones" class="cantidad-porciones h-full w-12 text-center outline-none focus:bg-gray-50 disabled:opacity-60" />
+                <button data-sumar type="button" aria-label="Aumentar porciones" class="h-full w-9 flex items-center justify-center hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"><svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6" /></svg></button>
+              </span>
+          </div>
           <button
             data-agregar
+            type="button"
             class="mt-4 w-full bg-red-600 rounded-md py-2 font-semibold text-white cursor-pointer hover:bg-red-700"
           >
             Agregar
           </button>
+          <p data-mensaje-carrito class="mt-2 text-sm text-green-800" role="status" aria-live="polite"></p>
         </article>
       </template>
     </main>
 
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="src/main.js"></script>
+    <script type="module" src="src/pages/sesion-carta.js"></script>
   </body>
 </html>

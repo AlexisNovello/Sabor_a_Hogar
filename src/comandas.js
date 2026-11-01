@@ -1,6 +1,13 @@
+import { supabase } from './lib/supabase.js';
 import { obtenerPedidos, actualizarEstadoPedido } from "./services/pedidos.js";
 
+const listaAcceso = document.querySelector("#lista-comandas-admin");
+listaAcceso.textContent = "Verificando acceso...";
+
+async function cargarComandas() {
+try {
 const pedidos = await obtenerPedidos();
+listaAcceso.textContent = "";
 
 // llama los elementos del html
 const lista = document.querySelector("#lista-comandas-admin");
@@ -77,6 +84,11 @@ for (const pedido of pedidos) {
     const nuevoEstado =
       pedido.estado_pedido === "Pendiente" ? "En preparación" : "Listo";
 
+    const confirmar = window.confirm(
+      `¿Confirmás cambiar el pedido n.º ${pedido.id_pedido} de “${pedido.estado_pedido}” a “${nuevoEstado}”?`,
+    );
+    if (!confirmar) return;
+
     botonEstado.disabled = true;
     botonEstado.textContent = "Guardando...";
 
@@ -110,3 +122,20 @@ for (const pedido of pedidos) {
   // inserta cada plantilla a la lista
   lista.append(copia);
 }
+
+} catch (error) {
+  listaAcceso.textContent = error.code === 'FORBIDDEN'
+    ? error.message
+    : 'No se pudieron cargar las comandas. Recargá la página para intentar nuevamente.';
+  console.error('No se pudieron cargar las comandas:', error);
+}
+}
+
+cargarComandas();
+
+supabase.auth.onAuthStateChange((evento) => {
+  if (evento === 'SIGNED_OUT') {
+    listaAcceso.replaceChildren();
+    window.location.reload();
+  }
+});

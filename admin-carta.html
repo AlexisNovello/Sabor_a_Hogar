@@ -4,143 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestión de la carta | Sabor a Hogar</title>
-    <link rel="stylesheet" href="/src/style.css" />
+    <link rel="stylesheet" href="src/style.css" />
   </head>
   <body>
-    <!-- Header Sabor a Hogar - Administrador -->
     <header class="bg-red-600 text-white">
-      <div class="max-w-6xl mx-auto p-6 flex justify-between items-center">
+      <div class="max-w-6xl mx-auto p-6 flex justify-between items-center gap-4">
         <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
-        <a
-          href="administrador.html"
-          class="h-10 bg-red-700 rounded-md px-4 py-2 font-semibold text-white hover:bg-red-800"
-        >
-          Volver al panel
-        </a>
+        <a href="administrador.html" class="rounded-md bg-red-700 px-4 py-2 font-semibold hover:bg-red-800">Volver al panel</a>
       </div>
     </header>
-
     <main class="max-w-6xl mx-auto p-6">
-      <h2 class="text-2xl font-semibold mt-6">Control de la Carta</h2>
-      <p class="text-gray-600 text-sm mt-1">
-        Edita o añadi tus nuevos platos al menu principal.
-      </p>
-
-      <!-- Contenedor principal -->
-      <div class="mt-6 flex items-center gap-4">
-        <!-- Flecha Izquierda -->
-        <button
-          class="h-12 w-12 border border-gray-400 bg-white hover:bg-gray-100 rounded-md flex items-center justify-center text-gray-800 font-black text-xl cursor-pointer shadow-sm transition-colors"
-          type="button"
-          title="Anteriores"
-        >
-          <i class="fa-solid fa-chevron-left"></i>
-        </button>
-
-        <!-- Grilla de los 3 Productos de la Carta -->
-        <div id="lista-carta-admin" class="grid grid-cols-3 gap-6 grow">
-          <!-- Plato 1: Hamburguesa -->
-          <article
-            class="border rounded-lg p-4 flex flex-col bg-white shadow-sm"
-          >
-            <img
-              src=""
-              class="w-full h-64 object-cover rounded-md"
-              alt="Hamburguesa Completa"
-            />
-            <h3 class="text-xl font-bold mt-4">Hamburguesa Completa</h3>
-            <p class="mt-2 pt-2 text-xl font-bold text-gray-900">$4.500</p>
-            <button
-              class="mt-4 w-full bg-red-600 rounded-md py-2 font-semibold text-white cursor-pointer hover:bg-red-700"
-              type="button"
-            >
-              Editar
-            </button>
-          </article>
-
-          <!-- Plato 2: Pizza -->
-          <article
-            class="border rounded-lg p-4 flex flex-col bg-white shadow-sm"
-          >
-            <img
-              src=""
-              class="w-full h-64 object-cover rounded-md"
-              alt="Pizza de Muzzarella"
-            />
-            <h3 class="text-xl font-bold mt-4">Pizza de Muzzarella</h3>
-            <p class="mt-2 pt-2 text-xl font-bold text-gray-900">$6.000</p>
-            <button
-              class="mt-4 w-full bg-red-600 rounded-md py-2 font-semibold text-white cursor-pointer hover:bg-red-700"
-              type="button"
-            >
-              Editar
-            </button>
-          </article>
-
-          <!-- Plato 3: Empanadas -->
-          <article
-            class="border rounded-lg p-4 flex flex-col bg-white shadow-sm"
-          >
-            <img
-              src=""
-              class="w-full h-64 object-cover rounded-md"
-              alt="Empanadas Criollas"
-            />
-            <h3 class="text-xl font-bold mt-4">Empanadas Criollas</h3>
-            <p class="mt-2 pt-2 text-xl font-bold text-gray-900">$2.800</p>
-            <button
-              class="mt-4 w-full bg-red-600 rounded-md py-2 font-semibold text-white cursor-pointer hover:bg-red-700"
-              type="button"
-            >
-              Editar
-            </button>
-          </article>
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-semibold">Control de la Carta</h2>
+          <p class="text-gray-600 text-sm mt-1">Editá o añadí tus platos al menú principal.</p>
         </div>
-
-        <!-- Flecha Derecha -->
-        <button
-          class="h-12 w-12 border border-gray-400 bg-white hover:bg-gray-100 rounded-md flex items-center justify-center text-gray-800 font-black text-xl cursor-pointer shadow-sm transition-colors"
-          type="button"
-          title="Siguientes"
-        >
-          <i class="fa-solid fa-chevron-right"></i>
-        </button>
+        <a href="admin-plato.html" class="rounded-md bg-red-600 px-6 py-2 font-semibold text-white hover:bg-red-700">Añadir</a>
       </div>
-
-      <!-- Bloque con el Total acumulado de la carta y el Boton de añadir -->
-      <div
-        class="mt-8 border-t border-gray-300 pt-6 flex justify-between items-end"
-      >
-        <div class="text-left">
-          <span class="block text-sm font-semibold text-gray-600">Total:</span>
-          <p
-            id="total-carta"
-            class="text-3xl font-extrabold text-gray-900 mt-1"
-          >
-            $13.300
-          </p>
-        </div>
-        <button
-          class="h-10 bg-red-600 rounded-md px-6 py-2 font-semibold text-white cursor-pointer hover:bg-red-700"
-          type="button"
-        >
-          Añadir
-        </button>
-      </div>
-
+      <p id="mensaje-carta" class="mt-6 text-gray-600" role="status" aria-live="polite">Cargando productos...</p>
+      <div id="lista-carta-admin" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       <template id="plantilla-item-carta-admin">
-        <article class="border rounded-lg p-4 flex flex-col bg-white shadow-sm">
-          <img data-foto class="w-full h-64 object-cover rounded-md" />
-          <h3 data-nombre class="text-xl font-bold mt-4"></h3>
-          <p data-precio class="mt-2 pt-2 text-xl font-bold text-gray-900"></p>
-          <button
-            class="mt-4 w-full bg-red-600 rounded-md py-2 font-semibold text-white"
-            type="button"
-          >
-            Editar
-          </button>
+        <article class="min-w-0 border rounded-lg p-4 flex flex-col bg-white shadow-sm">
+          <div class="h-56 overflow-hidden rounded-md bg-gray-100">
+            <img data-foto class="w-full h-full object-cover" loading="lazy" />
+            <p data-sin-foto class="hidden h-full items-center justify-center text-gray-500 text-sm">Imagen no disponible</p>
+          </div>
+          <h3 data-nombre class="text-xl font-bold mt-4 break-words"></h3>
+          <p data-precio class="mt-auto pt-4 text-xl font-bold text-gray-900"></p>
+          <a data-editar class="mt-4 w-full text-center bg-red-600 rounded-md py-2 font-semibold text-white hover:bg-red-700">Editar</a>
         </article>
       </template>
     </main>
+    <script type="module" src="src/admin-carta.js"></script>
   </body>
 </html>
