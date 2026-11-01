@@ -69,4 +69,30 @@ No subas `.env`, `node_modules/` ni `dist/`. Sí se comparten `package.json`, `p
 
 ## Estado actual
 
-Base de Vite y Tailwind configurada. La consulta a la tabla `producto` de Supabase fue probada y muestra los resultados en la consola del navegador. La presentación visual del catálogo está pendiente.
+Catálogo conectado a Supabase, carrito persistido en el navegador, creación de pedidos mediante la función `crear_pedido`, comandas y gestión de stock. Se recuperaron el registro, login y cierre de sesión de la rama `autenticacion`, adaptados al flujo actual.
+
+## Autenticación y pedidos
+
+- La carta es pública. El enlace **Ingresar** abre `/login.html`, que permite acceder al registro de dos pasos en `/registro.html`.
+- Al confirmar un carrito sin sesión se abre el login; después de ingresar se vuelve al carrito con sus productos. El cliente debe confirmar nuevamente: iniciar sesión no crea un pedido automáticamente.
+- Antes de llamar a `crear_pedido`, se verifica el usuario con Supabase Auth. Se mantiene el contrato actual: `{ productos: [{ id_producto, cantidad }] }`. Los precios no se envían desde el navegador.
+- El cierre de sesión conserva el carrito de este navegador. El carrito no está separado por cuenta; en dispositivos compartidos, revisá sus productos antes de confirmar.
+- Las rutas antiguas `/contraseña.html` y `/registrocliente.html` redirigen a las nuevas pantallas.
+- La compilación incluye todas las páginas HTML de la raíz. El flujo de pedidos sigue usando retiro en el local; delivery continúa pendiente.
+
+### Configuración pendiente de verificar en Supabase
+
+El repositorio no contiene el esquema SQL ni migraciones. El registro envía nombre, apellido, DNI, teléfono y dirección como metadata a Supabase Auth; la creación del perfil en `public.usuario` depende del trigger existente en la base de datos. Hay que verificar que sus columnas y el vínculo con `auth.users.id` sean compatibles.
+
+En Authentication, verificá que el proveedor Email esté habilitado, la confirmación de correo tenga la configuración deseada y las URL del sitio y de redirección correspondan al entorno donde se prueba o publica.
+
+La función `crear_pedido` debe obtener la identidad desde `auth.uid()`, rechazar visitantes y asociar el pedido con su usuario. También debe validar cantidades, precios y stock en el servidor. Las políticas RLS y permisos deben limitar la lectura y modificación de pedidos, stock y administración según el rol. La comprobación de sesión del frontend no reemplaza esos permisos. No se modificó la base de datos ni se añadieron controles de roles administrativos sin conocer su esquema.
+
+## Verificación
+
+```bash
+npm test
+npm run build
+```
+
+Las pruebas usan dobles de Supabase, sin conectarse a la base. Cubren autenticación requerida, contrato de pedidos, errores de conexión, metadata de registro y destinos del login. Para verificar el entorno real: registrar una cuenta de prueba, confirmar su correo si corresponde, iniciar y cerrar sesión y confirmar un carrito; comprobar tanto el perfil creado como el usuario asociado al pedido en Supabase. Probar también credenciales incorrectas, sesión vencida y permisos de cada rol.

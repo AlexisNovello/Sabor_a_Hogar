@@ -1,5 +1,7 @@
 #proyecto
 .env
+.env.*
+!.env.example
 PDF.pdf
 
 # Logs

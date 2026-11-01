@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mis pedidos | Sabor a Hogar</title>
+  <link rel="stylesheet" href="src/style.css" />
+</head>
+<body>
+  <header class="bg-red-600 text-white">
+    <div class="max-w-6xl mx-auto p-6 flex justify-between items-center gap-4">
+      <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+      <a href="index.html" class="bg-red-700 hover:bg-red-800 rounded-md px-4 py-2 font-semibold">Volver a la carta</a>
+    </div>
+  </header>
+  <main class="max-w-6xl mx-auto p-6">
+    <div class="mt-6 flex items-center justify-between gap-4">
+      <h2 class="text-2xl font-semibold">Mis pedidos</h2>
+      <button id="actualizar-pedidos" type="button" class="rounded-md border border-gray-400 px-4 py-2 hover:bg-gray-100 disabled:opacity-50">Actualizar</button>
+    </div>
+    <p class="mt-2 text-sm text-gray-600">Consultá tus pedidos pendientes, en preparación y listos para retirar.</p>
+    <p id="mensaje-pedidos" class="mt-4 text-sm" role="status" aria-live="polite"></p>
+    <a id="ingresar-pedidos" href="login.html" class="hidden mt-4 bg-red-600 text-white rounded-md px-4 py-2">Iniciar sesión</a>
+    <div id="lista-mis-pedidos" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <template id="plantilla-mi-pedido">
+      <article class="border rounded-lg p-5 flex flex-col gap-3 bg-white shadow-sm">
+        <h3 data-numero class="text-xl font-bold"></h3>
+        <p data-fecha class="text-sm text-gray-600"></p>
+        <p data-estado class="self-start rounded-md px-3 py-1 text-sm font-semibold"></p>
+        <ul data-productos class="list-disc pl-5 space-y-2"></ul>
+      </article>
+    </template>
+  </main>
+  <script type="module" src="src/mis-pedidos.js"></script>
+</body>
+</html>
