@@ -60,12 +60,20 @@ for (const producto of carrito) {
   // guarda la nueva cantidad
   const inputCantidad = copia.querySelector("[data-input-cantidad]");
 
-  for (const [selector, paso] of [['[data-restar]', -1], ['[data-sumar]', 1]]) {
-    copia.querySelector(selector).addEventListener('click', () => {
+  for (const [selector, paso] of [
+    ["[data-restar]", -1],
+    ["[data-sumar]", 1],
+  ]) {
+    copia.querySelector(selector).addEventListener("click", () => {
       if (guardando) return;
       const actual = Number(inputCantidad.value);
-      inputCantidad.value = Math.max(1, (Number.isSafeInteger(actual) && actual > 0 ? actual : producto.cantidad) + paso);
-      inputCantidad.dispatchEvent(new Event('change', { bubbles: true }));
+      inputCantidad.value = Math.max(
+        1,
+        (Number.isSafeInteger(actual) && actual > 0
+          ? actual
+          : producto.cantidad) + paso,
+      );
+      inputCantidad.dispatchEvent(new Event("change", { bubbles: true }));
     });
   }
 
@@ -110,11 +118,20 @@ botonConfirmar.addEventListener("click", async () => {
 
   guardando = true;
   // Mantiene estable el pedido mientras se verifica la sesión y se guarda.
-  lista.querySelectorAll("button, input").forEach((elemento) => elemento.disabled = true);
+  lista
+    .querySelectorAll("button, input")
+    .forEach((elemento) => (elemento.disabled = true));
   botonConfirmar.disabled = true;
   botonConfirmar.textContent = "Guardando...";
   mensajePedido.textContent = "";
-  mensajePedido.classList.remove("rounded-md", "p-4", "bg-green-100", "text-green-800", "bg-red-100", "text-red-800");
+  mensajePedido.classList.remove(
+    "rounded-md",
+    "p-4",
+    "bg-green-100",
+    "text-green-800",
+    "bg-red-100",
+    "text-red-800",
+  );
 
   try {
     const idPedido = await crearPedido(carrito);
@@ -126,20 +143,42 @@ botonConfirmar.addEventListener("click", async () => {
     lista.textContent = "Los productos de tu pedido ya fueron enviados.";
     actualizarTotal();
 
-    mensajePedido.classList.add("rounded-md", "p-4", "bg-green-100", "text-green-800");
-    document.querySelector('#ver-mis-pedidos')?.classList.remove('hidden');
+    mensajePedido.classList.add(
+      "rounded-md",
+      "p-4",
+      "bg-green-100",
+      "text-green-800",
+    );
+    document.querySelector("#ver-mis-pedidos")?.classList.remove("hidden");
     mensajePedido.textContent = `¡Pedido n.º ${idPedido} confirmado! Podés volver al menú para seguir comprando.`;
   } catch (error) {
     if (error.code === "AUTH_REQUIRED") {
-      irAlLogin('/carrito.html');
+      irAlLogin("/carrito.html");
       return;
     }
+
     console.error("Error al guardar el pedido:", error);
-    mensajePedido.classList.add("rounded-md", "p-4", "bg-red-100", "text-red-800");
-    mensajePedido.textContent = "No se pudo guardar el pedido. Tus productos siguen en el carrito. Intentá nuevamente.";
+
+    mensajePedido.classList.add(
+      "rounded-md",
+      "p-4",
+      "bg-red-100",
+      "text-red-800",
+    );
+
+    // muestra el motivo si la cuenta está bloqueada
+    if (error.message === "Tu cuenta está bloqueada para realizar pedidos") {
+      mensajePedido.textContent =
+        "Tu cuenta está bloqueada para realizar pedidos. Comunicate con el local.";
+    } else {
+      mensajePedido.textContent =
+        "No se pudo guardar el pedido. Tus productos siguen en el carrito. Intentá nuevamente.";
+    }
   } finally {
     guardando = false;
-    lista.querySelectorAll("button, input").forEach((elemento) => elemento.disabled = false);
+    lista
+      .querySelectorAll("button, input")
+      .forEach((elemento) => (elemento.disabled = false));
     actualizarTotal();
     botonConfirmar.textContent = "Confirmar pedido";
   }
