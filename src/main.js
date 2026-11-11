@@ -40,19 +40,27 @@ for (const producto of productos) {
   const cantidad = copia.querySelector("[data-cantidad]");
   const mensaje = copia.querySelector("[data-mensaje-carrito]");
 
-  const restar = copia.querySelector('[data-restar]');
-  const sumar = copia.querySelector('[data-sumar]');
-  for (const [boton, paso] of [[restar, -1], [sumar, 1]]) {
-    boton.addEventListener('click', () => {
+  const restar = copia.querySelector("[data-restar]");
+  const sumar = copia.querySelector("[data-sumar]");
+  for (const [boton, paso] of [
+    [restar, -1],
+    [sumar, 1],
+  ]) {
+    boton.addEventListener("click", () => {
       if (cantidad.disabled) return;
       const actual = Number(cantidad.value);
-      cantidad.value = Math.max(1, (Number.isSafeInteger(actual) && actual > 0 ? actual : 1) + paso);
-      cantidad.dispatchEvent(new Event('input', { bubbles: true }));
+      cantidad.value = Math.max(
+        1,
+        (Number.isSafeInteger(actual) && actual > 0 ? actual : 1) + paso,
+      );
+      cantidad.dispatchEvent(new Event("input", { bubbles: true }));
     });
   }
 
   function actualizarBoton() {
-    const item = carrito.find((item) => item.id_producto === producto.id_producto);
+    const item = carrito.find(
+      (item) => item.id_producto === producto.id_producto,
+    );
     const agregado = Boolean(item?.cantidad);
     botonAgregar.classList.toggle("bg-red-600", !agregado);
     botonAgregar.classList.toggle("hover:bg-red-700", !agregado);
@@ -64,15 +72,20 @@ for (const producto of productos) {
     sumar.disabled = agregado;
     botonAgregar.classList.toggle("cursor-pointer", !agregado);
     botonAgregar.classList.toggle("cursor-default", agregado);
-    botonAgregar.textContent = agregado ? `En el carrito (${item.cantidad})` : "Agregar al carrito";
+    botonAgregar.textContent = agregado
+      ? `En el carrito (${item.cantidad})`
+      : "Agregar al carrito";
   }
   actualizarBoton();
   cantidad.addEventListener("input", () => cantidad.setCustomValidity(""));
   botonAgregar.addEventListener("click", () => {
-    if (carrito.some((item) => item.id_producto === producto.id_producto)) return;
+    if (carrito.some((item) => item.id_producto === producto.id_producto))
+      return;
     const porciones = Number(cantidad.value);
     if (!Number.isSafeInteger(porciones) || porciones < 1) {
-      cantidad.setCustomValidity("Ingresá una cantidad entera de al menos una porción.");
+      cantidad.setCustomValidity(
+        "Ingresá una cantidad entera de al menos una porción.",
+      );
       cantidad.reportValidity();
       return;
     }
@@ -103,3 +116,38 @@ for (const producto of productos) {
   // inserto cada plantilla a la lista
   lista.append(copia);
 }
+
+// llama los elementos del buscador
+const formularioBusqueda = document.querySelector("#formulario-busqueda");
+const buscarProductos = document.querySelector("#buscar-productos");
+
+// convierte el texto a minúsculas y quita los acentos
+function prepararBusqueda(texto) {
+  return texto
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+// muestra solamente los productos que coinciden con el nombre
+function filtrarProductos() {
+  const busqueda = prepararBusqueda(buscarProductos.value);
+  const tarjetas = lista.querySelectorAll("article");
+
+  for (const tarjeta of tarjetas) {
+    const nombre = tarjeta.querySelector("[data-nombre]").textContent;
+    const coincide = prepararBusqueda(nombre).includes(busqueda);
+
+    tarjeta.classList.toggle("hidden", !coincide);
+  }
+}
+
+// busca al presionar el botón o Enter
+formularioBusqueda.addEventListener("submit", (evento) => {
+  evento.preventDefault();
+  filtrarProductos();
+});
+
+// actualiza los resultados mientras se escribe o se borra
+buscarProductos.addEventListener("input", filtrarProductos);

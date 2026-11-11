@@ -21,101 +21,67 @@
     </header>
 
     <main class="max-w-6xl mx-auto p-6">
-      <!-- Titulo del panel de usuarios -->
+      <!-- Titulo de la sección -->
       <h2 class="text-2xl font-semibold mt-6">Control de Usuarios</h2>
       <p class="text-gray-600 text-sm mt-1">
-        Controla las cuentas de los clientes registrados, sus perfiles o aplica
-        bloqueos.
+        Consulta los datos de los usuarios y bloquea o desbloquea clientes.
       </p>
 
       <!-- Grilla de Usuarios -->
-      <div id="lista-usuarios-admin" class="mt-6 grid grid-cols-3 gap-6">
-        <!-- Usuario 1 -->
-        <article class="border rounded-lg p-4 flex flex-col bg-white shadow-sm">
-          <h3 class="text-xl font-bold text-gray-900">Alexis Novello</h3>
-          <p class="text-sm text-gray-600 mt-1">alexis.novello@email.com</p>
+      <div
+        id="lista-usuarios-admin"
+        class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+      ></div>
 
-          <!-- Botones para la accion requeridos -->
-          <div class="mt-6 flex flex-col gap-2">
-            <button
-              class="w-full h-10 bg-black text-white rounded-md font-semibold cursor-pointer hover:bg-gray-900 transition-colors"
-              type="button"
-            >
-              Ver los datos
-            </button>
-            <button
-              class="w-full h-10 bg-red-600 text-white rounded-md font-semibold cursor-pointer hover:bg-red-700 transition-colors"
-              type="button"
-            >
-              Desbloquear
-            </button>
-          </div>
-        </article>
-
-        <!-- Usuario 2 -->
-        <article class="border rounded-lg p-4 flex flex-col bg-white shadow-sm">
-          <h3 class="text-xl font-bold text-gray-900">Mariana Lopez</h3>
-          <p class="text-sm text-gray-600 mt-1">mariana.lopez@email.com</p>
-
-          <div class="mt-6 flex flex-col gap-2">
-            <button
-              class="w-full h-10 bg-black text-white rounded-md font-semibold cursor-pointer hover:bg-gray-900 transition-colors"
-              type="button"
-            >
-              Ver los datos
-            </button>
-            <button
-              class="w-full h-10 bg-red-600 text-white rounded-md font-semibold cursor-pointer hover:bg-red-700 transition-colors"
-              type="button"
-            >
-              Bloquear Cuenta
-            </button>
-          </div>
-        </article>
-
-        <!-- Usuario 3 -->
-        <article class="border rounded-lg p-4 flex flex-col bg-white shadow-sm">
-          <h3 class="text-xl font-bold text-gray-900">Carlos Mendoza</h3>
-          <p class="text-sm text-gray-600 mt-1">carlos.mendaoza@email.com</p>
-
-          <div class="mt-6 flex flex-col gap-2">
-            <button
-              class="w-full h-10 bg-black text-white rounded-md font-semibold cursor-pointer hover:bg-gray-900 transition-colors"
-              type="button"
-            >
-              Ver los datos
-            </button>
-            <button
-              class="w-full h-10 bg-red-600 text-white rounded-md font-semibold cursor-pointer hover:bg-red-700 transition-colors"
-              type="button"
-            >
-              Bloquear cuenta
-            </button>
-          </div>
-        </article>
-      </div>
-
+      <!-- Plantilla para cada usuario -->
       <template id="plantilla-usuario-admin">
         <article class="border rounded-lg p-4 flex flex-col bg-white shadow-sm">
           <h3 data-nombre-usuario class="text-xl font-bold text-gray-900"></h3>
-          <p data-email-usuario class="text-sm text-gray-600 mt-1"></p>
+          <p
+            data-email-usuario
+            class="text-sm text-gray-600 mt-1 break-all"
+          ></p>
+          <p data-rol-usuario class="text-sm text-gray-600 mt-1"></p>
+          <p data-estado-usuario class="text-sm font-semibold mt-2"></p>
 
           <div class="mt-6 flex flex-col gap-2">
             <button
-              class="w-full h-10 bg-black text-white rounded-md font-semibold"
+              data-ver-datos
+              class="w-full h-10 bg-black text-white rounded-md font-semibold cursor-pointer hover:bg-gray-900"
               type="button"
+              aria-expanded="false"
             >
               Ver los datos
             </button>
+
             <button
-              class="w-full h-10 bg-red-600 text-white rounded-md font-semibold"
+              data-bloquear-usuario
+              class="hidden w-full h-10 text-white rounded-md font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               type="button"
             >
               Bloquear cuenta
             </button>
+          </div>
+
+          <!-- Datos que se muestran al presionar el botón -->
+          <div data-datos-usuario class="hidden mt-4 space-y-2 text-sm">
+            <p>
+              <span class="font-bold">DNI:</span>
+              <span data-dni-usuario></span>
+            </p>
+            <p>
+              <span class="font-bold">Teléfono:</span>
+              <span data-telefono-usuario></span>
+            </p>
+            <p>
+              <span class="font-bold">Dirección:</span>
+              <span data-direccion-usuario></span>
+            </p>
           </div>
         </article>
       </template>
     </main>
+
+    <script type="module" src="src/admin-usuarios.js"></script>
   </body>
 </html>
