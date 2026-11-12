@@ -16,9 +16,81 @@ export async function obtenerTodosLosProductos() {
   }
 }
 
-// trae todos los productos para mostrar en la carta
+// trae la carta y comprueba si alcanza para una porción de cada plato
 export async function obtenerProductos() {
-  return obtenerTodosLosProductos();
+  // los retirados permanecen en administración, pero no en la carta del cliente
+  const productos = (await obtenerTodosLosProductos()).filter(
+    (producto) => producto.estado !== "oculto",
+  );
+
+  // consulta por lotes para no dejar ingredientes o recetas fuera del cálculo
+  async function obtenerFilas(tabla, columnas, identificador) {
+    const filas = [];
+    const tamanoLote = 500;
+
+    for (let desde = 0; ; desde += tamanoLote) {
+      const { data, error } = await supabase
+        .from(tabla)
+        .select(columnas)
+        .order(identificador, { ascending: true })
+        .range(desde, desde + tamanoLote - 1);
+
+      if (error) throw error;
+      filas.push(...data);
+      if (data.length < tamanoLote) return filas;
+    }
+  }
+
+  const recetas = await obtenerFilas(
+    "receta", "id_receta, id_producto, id_ingrediente, cantidad_necesaria", "id_receta",
+  );
+  const ingredientes = await obtenerFilas(
+    "stock", "id_ingrediente, cantidad_stock", "id_ingrediente",
+  );
+  const stockPorIngrediente = new Map(
+    ingredientes.map((ingrediente) => [ingrediente.id_ingrediente, ingrediente.cantidad_stock]),
+  );
+  const recetasPorProducto = new Map();
+
+  for (const fila of recetas) {
+    if (!recetasPorProducto.has(fila.id_producto)) {
+      recetasPorProducto.set(fila.id_producto, []);
+    }
+    recetasPorProducto.get(fila.id_producto).push(fila);
+  }
+
+  return productos.map((producto) => {
+    const receta = recetasPorProducto.get(producto.id_producto) || [];
+
+    // sin receta o sin algún ingrediente el plato no se puede comprar
+    const disponible = receta.length > 0 && receta.every((fila) => {
+      const existencia = stockPorIngrediente.get(fila.id_ingrediente);
+      const necesaria = Number(fila.cantidad_necesaria);
+      const stock = Number(existencia);
+
+      return existencia != null && Number.isFinite(stock) &&
+        Number.isFinite(necesaria) && necesaria > 0 && stock >= necesaria;
+    });
+
+    return { ...producto, disponible };
+  });
+}
+
+// retira o publica un plato sin eliminar sus recetas ni pedidos anteriores
+export async function actualizarPublicacionProducto(idProducto, estado) {
+  if (!["disponible", "oculto"].includes(estado)) {
+    throw new Error("El estado del producto no es válido.");
+  }
+
+  const { data, error } = await supabase
+    .from("producto")
+    .update({ estado: estado })
+    .eq("id_producto", idProducto)
+    .select("id_producto, estado")
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function obtenerProducto(id) {

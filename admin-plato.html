@@ -1,56 +1,246 @@
 <!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Datos del plato | Sabor a Hogar</title>
-  <link rel="stylesheet" href="src/style.css" />
-</head>
-<body>
-  <header class="bg-red-600 text-white">
-    <div class="max-w-6xl mx-auto p-6 flex justify-between items-center gap-4">
-      <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
-      <a href="admin-carta.html" class="rounded-md bg-red-700 px-4 py-2 font-semibold hover:bg-red-800">Volver a la carta</a>
-    </div>
-  </header>
-  <main class="max-w-6xl mx-auto p-6 flex flex-col items-center">
-    <form id="formulario-plato" class="border rounded-lg p-6 sm:p-8 max-w-lg w-full mt-6 bg-white">
-      <h2 id="titulo-plato" class="text-2xl font-bold mb-6">Añadir plato</h2>
-      <p id="mensaje-plato" class="mb-4 text-sm" role="status" aria-live="polite"></p>
-      <fieldset id="campos-plato" class="flex flex-col gap-5" disabled>
-        <div>
-          <p class="block text-sm font-semibold">Imagen del plato</p>
-          <input id="subir-foto" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" aria-label="Seleccionar imagen del plato" />
-          <div class="mt-3 grid grid-cols-2 items-center gap-3">
-            <button id="elegir-foto" type="button" class="h-10 w-full inline-flex items-center justify-center gap-2 rounded-md bg-red-600 px-2 text-sm font-semibold text-white hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:opacity-50 cursor-pointer">
-              <svg aria-hidden="true" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m-5 5 5-5 5 5M4 16v4h16v-4" /></svg>
-              <span id="texto-elegir-foto">Subir imagen</span>
-            </button>
-            <p id="nombre-archivo" class="min-w-0 text-sm text-gray-600 break-words" aria-live="polite">Ningún archivo seleccionado.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Datos del plato | Sabor a Hogar</title>
+    <link rel="stylesheet" href="src/style.css" />
+  </head>
+  <body>
+    <header class="bg-red-600 text-white">
+      <div
+        class="max-w-6xl mx-auto p-6 flex justify-between items-center gap-4"
+      >
+        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+        <a
+          href="admin-carta.html"
+          class="rounded-md bg-red-700 px-4 py-2 font-semibold hover:bg-red-800"
+          >Volver a la carta</a
+        >
+      </div>
+    </header>
+    <main class="max-w-6xl mx-auto p-6 flex flex-col items-center">
+      <form
+        id="formulario-plato"
+        class="border rounded-lg p-6 sm:p-8 max-w-lg w-full mt-6 bg-white"
+      >
+        <h2 id="titulo-plato" class="text-2xl font-bold mb-6">Añadir plato</h2>
+        <p
+          id="mensaje-plato"
+          class="mb-4 text-sm"
+          role="status"
+          aria-live="polite"
+        ></p>
+        <fieldset id="campos-plato" class="flex flex-col gap-5" disabled>
+          <div>
+            <p class="block text-sm font-semibold">Imagen del plato</p>
+            <input
+              id="subir-foto"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              class="hidden"
+              aria-label="Seleccionar imagen del plato"
+            />
+            <div class="mt-3 grid grid-cols-2 items-center gap-3">
+              <button
+                id="elegir-foto"
+                type="button"
+                class="h-10 w-full inline-flex items-center justify-center gap-2 rounded-md bg-red-600 px-2 text-sm font-semibold text-white hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:opacity-50 cursor-pointer"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="h-4 w-4 shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M12 16V4m-5 5 5-5 5 5M4 16v4h16v-4" />
+                </svg>
+                <span id="texto-elegir-foto">Subir imagen</span>
+              </button>
+              <p
+                id="nombre-archivo"
+                class="min-w-0 text-sm text-gray-600 break-words"
+                aria-live="polite"
+              >
+                Ningún archivo seleccionado.
+              </p>
+            </div>
+            <p id="ayuda-foto" class="mt-1 text-sm text-gray-600"></p>
+            <p
+              id="error-foto"
+              class="mt-2 text-sm text-red-700"
+              role="status"
+            ></p>
           </div>
-          <p id="ayuda-foto" class="mt-1 text-sm text-gray-600"></p>
-          <p id="error-foto" class="mt-2 text-sm text-red-700" role="status"></p>
-        </div>
-        <div>
-          <label for="nombre-plato" class="block text-sm font-semibold">Nombre</label>
-          <input id="nombre-plato" type="text" required maxlength="150" placeholder="Ej.: Hamburguesa" class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2" />
-        </div>
-        <div>
-          <label for="descripcion-plato" class="block text-sm font-semibold">Descripción</label>
-          <textarea id="descripcion-plato" rows="3" required maxlength="2000" placeholder="Ej.: Hamburguesa completa con lechuga, tomate, queso y papas." class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2"></textarea>
-          <p class="mt-1 text-sm text-gray-600">Se muestra debajo del nombre en la carta.</p>
-        </div>
-        <div>
-          <label for="precio-plato" class="block text-sm font-semibold">Precio en pesos</label>
-          <input id="precio-plato" type="number" min="0.01" step="0.01" required placeholder="Ej.: 8700" class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2" />
-        </div>
-        <div class="mt-2 pt-4 border-t border-gray-200 flex justify-between items-center gap-4">
-          <a href="admin-carta.html" class="border border-gray-400 rounded-md px-6 py-2 font-semibold hover:bg-gray-100">Volver</a>
-          <button id="guardar-plato" type="submit" class="bg-red-600 rounded-md px-6 py-2 font-semibold text-white hover:bg-red-700 disabled:opacity-50">Guardar</button>
-        </div>
-      </fieldset>
-    </form>
-  </main>
-  <script type="module" src="src/admin-plato.js"></script>
-</body>
+          <div>
+            <label for="nombre-plato" class="block text-sm font-semibold"
+              >Nombre</label
+            >
+            <input
+              id="nombre-plato"
+              type="text"
+              required
+              maxlength="150"
+              placeholder="Ej.: Hamburguesa"
+              class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2"
+            />
+          </div>
+          <div>
+            <label for="descripcion-plato" class="block text-sm font-semibold"
+              >Descripción</label
+            >
+            <textarea
+              id="descripcion-plato"
+              rows="3"
+              required
+              maxlength="2000"
+              placeholder="Ej.: Hamburguesa completa con lechuga, tomate, queso y papas."
+              class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2"
+            ></textarea>
+            <p class="mt-1 text-sm text-gray-600">
+              Se muestra debajo del nombre en la carta.
+            </p>
+          </div>
+          <div>
+            <label for="precio-plato" class="block text-sm font-semibold"
+              >Precio en pesos</label
+            >
+            <input
+              id="precio-plato"
+              type="number"
+              min="0.01"
+              step="0.01"
+              required
+              placeholder="Ej.: 8700"
+              class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2"
+            />
+          </div>
+          <div
+            class="mt-2 pt-4 border-t border-gray-200 flex justify-between items-center gap-4"
+          >
+            <a
+              href="admin-carta.html"
+              class="border border-gray-400 rounded-md px-6 py-2 font-semibold hover:bg-gray-100"
+              >Volver</a
+            >
+            <button
+              id="guardar-plato"
+              type="submit"
+              class="bg-red-600 rounded-md px-6 py-2 font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+            >
+              Guardar
+            </button>
+          </div>
+        </fieldset>
+      </form>
+
+      <!-- Receta del plato -->
+      <section
+        id="seccion-receta"
+        class="hidden border rounded-lg p-6 sm:p-8 max-w-lg w-full mt-6 bg-white"
+      >
+        <h2 class="text-2xl font-bold">Receta del plato</h2>
+
+        <p class="text-gray-600 text-sm mt-2">
+          Indicá los ingredientes y las cantidades necesarias para una porción.
+          Usá la unidad de medida de cada ingrediente.
+        </p>
+
+        <p
+          id="mensaje-receta"
+          class="mt-4 text-sm"
+          role="status"
+          aria-live="polite"
+        ></p>
+
+        <!-- Formulario para agregar un ingrediente -->
+        <form id="formulario-receta" class="mt-6 flex flex-col gap-4">
+          <div>
+            <label for="ingrediente-receta" class="block text-sm font-semibold">
+              Ingrediente
+            </label>
+
+            <select
+              id="ingrediente-receta"
+              class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2"
+              required
+            >
+              <option value="">Seleccioná un ingrediente</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="cantidad-receta" class="block text-sm font-semibold">
+              Cantidad por porción
+            </label>
+
+            <input
+              id="cantidad-receta"
+              type="number"
+              min="0.01"
+              step="0.01"
+              class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2"
+              placeholder="Ej.: 150"
+              required
+            />
+          </div>
+
+          <button
+            id="agregar-ingrediente-receta"
+            type="submit"
+            class="bg-red-600 rounded-md px-6 py-2 font-semibold text-white hover:bg-red-700 disabled:opacity-50 cursor-pointer"
+            disabled
+          >
+            Agregar ingrediente
+          </button>
+        </form>
+
+        <!-- Lista de ingredientes de la receta -->
+        <div id="lista-receta" class="mt-6 space-y-4"></div>
+
+        <!-- Plantilla de cada ingrediente -->
+        <template id="plantilla-ingrediente-receta">
+          <article class="border rounded-lg p-4">
+            <h3 data-nombre-ingrediente class="font-bold"></h3>
+            <p data-unidad-ingrediente class="text-sm text-gray-600 mt-1"></p>
+
+            <div class="mt-3">
+              <label class="block text-sm font-semibold">
+                Cantidad por porción
+                <input
+                  data-cantidad-ingrediente
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2 font-normal"
+                  required
+                />
+              </label>
+            </div>
+
+            <div class="mt-4 flex gap-3">
+              <button
+                data-guardar-ingrediente
+                type="button"
+                class="bg-red-600 text-white rounded-md px-4 py-2 font-semibold hover:bg-red-700 disabled:opacity-50 cursor-pointer"
+              >
+                Guardar cantidad
+              </button>
+
+              <button
+                data-quitar-ingrediente
+                type="button"
+                class="border border-gray-400 rounded-md px-4 py-2 font-semibold hover:bg-gray-100 disabled:opacity-50 cursor-pointer"
+              >
+                Quitar
+              </button>
+            </div>
+          </article>
+        </template>
+      </section>
+    </main>
+    <script type="module" src="src/admin-plato.js"></script>
+  </body>
 </html>

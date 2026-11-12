@@ -47,3 +47,47 @@ export async function actualizarCantidad(
 
   return data;
 }
+
+// actualiza el nombre sin modificar el stock ni las recetas
+export async function actualizarNombreIngrediente(idIngrediente, nombre) {
+  const nuevoNombre = nombre.trim();
+
+  if (nuevoNombre === "") {
+    throw new Error("Ingresá el nombre del ingrediente.");
+  }
+
+  const { data, error } = await supabase
+    .from("stock")
+    .update({ nombre: nuevoNombre })
+    .eq("id_ingrediente", idIngrediente)
+    .select("id_ingrediente, nombre")
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+// elimina un ingrediente que no esté utilizado en recetas
+export async function eliminarIngrediente(idIngrediente) {
+  const { data, error } = await supabase
+    .from("stock")
+    .delete()
+    .eq("id_ingrediente", idIngrediente)
+    .select("id_ingrediente")
+    .single();
+
+  if (error) {
+    if (error.code === "23503") {
+      throw new Error(
+        "El ingrediente está relacionado con otros datos. Quitalo primero de las recetas que lo utilizan.",
+      );
+    }
+
+    throw error;
+  }
+
+  return data;
+}
