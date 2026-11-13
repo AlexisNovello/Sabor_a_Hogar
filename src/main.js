@@ -33,7 +33,14 @@ for (const producto of productos) {
   copia.querySelector("[data-precio]").textContent = formatoPrecio.format(
     producto.precio,
   );
-  copia.querySelector("[data-estado]").textContent = producto.estado;
+  // muestra la disponibilidad calculada según los ingredientes
+  const sinStock = producto.disponible === false;
+  const estado = copia.querySelector("[data-estado]");
+  estado.textContent = sinStock ? "Sin stock" : "Disponible";
+  estado.classList.toggle("bg-green-100", !sinStock);
+  estado.classList.toggle("text-green-800", !sinStock);
+  estado.classList.toggle("bg-red-100", sinStock);
+  estado.classList.toggle("text-red-800", sinStock);
 
   // cuando presiona el boton "agregar" envia ese producto al carrito
   const botonAgregar = copia.querySelector("[data-agregar]");
@@ -62,23 +69,27 @@ for (const producto of productos) {
       (item) => item.id_producto === producto.id_producto,
     );
     const agregado = Boolean(item?.cantidad);
-    botonAgregar.classList.toggle("bg-red-600", !agregado);
-    botonAgregar.classList.toggle("hover:bg-red-700", !agregado);
-    botonAgregar.classList.toggle("bg-green-700", agregado);
-    botonAgregar.classList.toggle("hover:bg-green-800", agregado);
-    botonAgregar.disabled = agregado;
-    cantidad.disabled = agregado;
-    restar.disabled = agregado;
-    sumar.disabled = agregado;
-    botonAgregar.classList.toggle("cursor-pointer", !agregado);
-    botonAgregar.classList.toggle("cursor-default", agregado);
-    botonAgregar.textContent = agregado
-      ? `En el carrito (${item.cantidad})`
-      : "Agregar al carrito";
+    const desactivado = agregado || sinStock;
+    botonAgregar.classList.toggle("bg-red-600", !desactivado);
+    botonAgregar.classList.toggle("hover:bg-red-700", !desactivado);
+    botonAgregar.classList.toggle("bg-green-700", agregado && !sinStock);
+    botonAgregar.classList.toggle("hover:bg-green-800", agregado && !sinStock);
+    botonAgregar.classList.toggle("bg-gray-400", sinStock);
+    botonAgregar.disabled = desactivado;
+    cantidad.disabled = desactivado;
+    restar.disabled = desactivado;
+    sumar.disabled = desactivado;
+    botonAgregar.classList.toggle("cursor-pointer", !desactivado);
+    botonAgregar.classList.toggle("cursor-default", agregado && !sinStock);
+    botonAgregar.classList.toggle("cursor-not-allowed", sinStock);
+    botonAgregar.textContent = sinStock
+      ? "Sin stock"
+      : agregado ? `En el carrito (${item.cantidad})` : "Agregar al carrito";
   }
   actualizarBoton();
   cantidad.addEventListener("input", () => cantidad.setCustomValidity(""));
   botonAgregar.addEventListener("click", () => {
+    if (sinStock) return;
     if (carrito.some((item) => item.id_producto === producto.id_producto))
       return;
     const porciones = Number(cantidad.value);

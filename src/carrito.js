@@ -166,10 +166,18 @@ botonConfirmar.addEventListener("click", async () => {
       "text-red-800",
     );
 
-    // muestra el motivo si la cuenta está bloqueada
+    // muestra los motivos conocidos del rechazo del pedido
     if (error.message === "Tu cuenta está bloqueada para realizar pedidos") {
       mensajePedido.textContent =
         "Tu cuenta está bloqueada para realizar pedidos. Comunicate con el local.";
+    } else if (error.message?.startsWith("Plato retirado de la carta:")) {
+      mensajePedido.textContent = `${error.message}. Quitá ese producto del carrito para continuar.`;
+    } else if (
+      error.message?.startsWith(
+        "Disponibilidad insuficiente para la cantidad solicitada:",
+      )
+    ) {
+      mensajePedido.textContent = `${error.message}. Reducí las cantidades o quitá alguno de esos productos del carrito.`;
     } else {
       mensajePedido.textContent =
         "No se pudo guardar el pedido. Tus productos siguen en el carrito. Intentá nuevamente.";

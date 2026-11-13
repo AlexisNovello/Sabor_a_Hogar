@@ -21,10 +21,24 @@
     </header>
 
     <main class="max-w-6xl mx-auto p-6">
-      <h2 class="text-2xl font-semibold mt-6">Este es tu Stock Actual</h2>
-      <p class="text-gray-600 text-sm mt-1">
-        Consultá los ingredientes y las cantidades disponibles en el local.
-      </p>
+      <!-- Titulo, descripción y botón para agregar ingredientes -->
+      <div
+        class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <h2 class="text-2xl font-semibold">Stock actual</h2>
+          <p class="text-gray-600 text-sm mt-1">
+            Consultá los ingredientes y las cantidades disponibles en el local.
+          </p>
+        </div>
+
+        <a
+          href="admin-ingrediente.html"
+          class="self-start sm:self-auto shrink-0 bg-red-600 rounded-md px-4 py-2 font-semibold text-white hover:bg-red-700"
+        >
+          Agregar ingrediente
+        </a>
+      </div>
 
       <p id="mensaje-stock"></p>
 
@@ -39,42 +53,53 @@
             >
               <th class="p-4">Ingredientes</th>
               <th class="p-4">Cantidad</th>
-              <th class="p-4 text-center w-32">Acciones</th>
+              <th class="p-4 text-center w-px whitespace-nowrap">Acciones</th>
             </tr>
           </thead>
           <tbody id="tabla-ingredientes"></tbody>
         </table>
       </div>
 
-      <!-- Boton inferior para agregar nuevo ingredientes -->
-      <div class="mt-6 flex justify-start">
-        <a
-          href="admin-ingrediente.html"
-          class="bg-red-600 rounded-md px-4 py-2 font-semibold text-white hover:bg-red-700"
-        >
-          Agregar nuevo ingrediente
-        </a>
-      </div>
-
       <template id="plantilla-fila-ingrediente">
         <tr class="border-b border-gray-300">
           <td data-nombre-ingrediente class="p-4 font-bold"></td>
           <td data-cantidad-ingrediente class="p-4 text-gray-700"></td>
-          <td class="p-4 flex justify-center gap-2">
-            <button
-              data-sumar
-              class="h-8 w-8 bg-red-600 text-white rounded-md font-extrabold text-lg flex items-center justify-center cursor-pointer"
-              type="button"
+          <td class="p-4">
+            <div
+              class="flex items-center justify-center gap-2 whitespace-nowrap"
             >
-              +
-            </button>
-            <button
-              data-restar
-              class="h-8 w-8 border border-gray-400 text-black rounded-md font-extrabold text-lg flex items-center justify-center cursor-pointer"
-              type="button"
-            >
-              -
-            </button>
+              <button
+                data-editar-nombre
+                class="h-9 px-3 border border-gray-400 rounded-md text-sm font-semibold hover:bg-gray-100 cursor-pointer disabled:opacity-50"
+                type="button"
+              >
+                Editar nombre
+              </button>
+
+              <button
+                data-sumar
+                class="h-9 px-3 bg-red-600 text-white rounded-md text-sm font-semibold hover:bg-red-700 cursor-pointer disabled:opacity-50"
+                type="button"
+              >
+                + Sumar
+              </button>
+
+              <button
+                data-restar
+                class="h-9 px-3 border border-gray-400 rounded-md text-sm font-semibold hover:bg-gray-100 cursor-pointer disabled:opacity-50"
+                type="button"
+              >
+                − Descontar
+              </button>
+
+              <button
+                data-eliminar-ingrediente
+                class="h-9 px-3 border border-red-600 text-red-700 rounded-md text-sm font-semibold hover:bg-red-50 cursor-pointer disabled:opacity-50"
+                type="button"
+              >
+                Eliminar
+              </button>
+            </div>
           </td>
         </tr>
       </template>
