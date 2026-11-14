@@ -27,14 +27,14 @@
           <a
             id="enlace-mis-pedidos"
             href="mis-pedidos.html"
-            class="hidden h-10 items-center rounded-md bg-red-700 px-4 text-sm font-semibold hover:bg-red-800"
+            class="hidden h-10 items-center rounded-md border border-white/60 bg-red-700 px-4 text-sm font-semibold hover:bg-red-800"
             >Mis pedidos</a
           >
           <a
             href="carrito.html"
             id="btn-carrito-header"
             title="Ver carrito"
-            class="inline-flex h-10 items-center gap-2 rounded-md bg-red-700 px-4 text-sm font-semibold hover:bg-red-800"
+            class="inline-flex h-10 items-center gap-2 rounded-md border border-white/60 bg-red-700 px-4 text-sm font-semibold hover:bg-red-800"
           >
             <i class="fa-solid fa-shopping-cart" aria-hidden="true"></i>
             Carrito
@@ -58,7 +58,7 @@
             <a
               id="enlace-admin"
               href="administrador.html"
-              class="hidden h-10 items-center content-center rounded-md bg-white px-4 text-sm font-semibold text-red-600 hover:bg-red-50"
+              class="hidden h-10 items-center content-center rounded-md bg-white px-4 text-sm font-semibold text-red-600 hover:bg-gray-300"
               >Administración</a
             >
             <div
@@ -67,7 +67,7 @@
               <span id="nombre-usuario" class="text-sm font-medium"></span>
               <button
                 id="boton-cerrar-sesion"
-                class="inline-flex h-10 items-center rounded-md border border-white/60 px-3 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
+                class="inline-flex h-10 items-center rounded-md border border-white/60 px-3 text-sm font-semibold hover:bg-red-800 disabled:opacity-60"
                 type="button"
               >
                 Cerrar sesión
@@ -84,23 +84,25 @@
       aria-live="polite"
     ></p>
     <main class="max-w-6xl mx-auto p-6">
-      <!-- Buscar productos -->
-      <!-- Buscar productos -->
-      <h2 class="text-2xl font-semibold mt-6">Nuestra carta</h2>
+      <div class="cabecera-carta">
+      <div class="titulo-carta">
+        <h2>Nuestra carta</h2>
+        <p>Comida casera para disfrutar en casa.</p>
+      </div>
 
       <form
         id="formulario-busqueda"
-        class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-end"
+        class="buscador-carta"
       >
-        <div class="w-full sm:max-w-sm">
+        <div class="campo-busqueda">
           <label class="block text-sm font-semibold" for="buscar-productos">
-            Buscar productos
+            ¿Qué te gustaría comer hoy?
           </label>
           <input
             class="mt-2 h-10 w-full border border-gray-400 rounded-md px-4 py-2"
             id="buscar-productos"
             type="search"
-            placeholder="Ej: hamburguesa"
+            placeholder="Buscá un plato, por ejemplo: hamburguesa"
           />
         </div>
 
@@ -111,6 +113,7 @@
           Buscar
         </button>
       </form>
+      </div>
       <!-- Lista de Productos -->
       <div id="lista-productos" class="mt-6 grid grid-cols-3 gap-6"></div>
       <!-- Plantilla de cada producto -->
@@ -127,7 +130,7 @@
           <div
             class="mt-4 flex items-center justify-between gap-3 text-sm font-semibold"
           >
-            Porciones para agregar
+            Cantidad de porciones
             <span
               class="inline-flex h-10 items-center rounded-md border border-gray-400 overflow-hidden bg-white"
             >
@@ -176,13 +179,18 @@
               </button>
             </span>
           </div>
+          <div class="mt-4 flex h-10">
           <button
             data-agregar
             type="button"
-            class="mt-4 w-full bg-red-600 rounded-md py-2 font-semibold text-white cursor-pointer hover:bg-red-700"
+            class="h-10 min-w-0 flex-1 border border-transparent bg-red-600 rounded-md py-2 font-semibold text-white"
           >
             Agregar
           </button>
+          <button data-quitar-carta type="button" aria-label="Quitar del carrito" title="Quitar del carrito" class="hidden h-10 w-11 shrink-0 rounded-r-md border border-red-600 bg-white text-red-600 hover:bg-red-50 cursor-pointer focus-visible:outline-2 focus-visible:outline-red-600 focus-visible:outline-offset-2">
+            <svg class="mx-auto h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+          </div>
           <p
             data-mensaje-carrito
             class="mt-2 text-sm text-green-800"

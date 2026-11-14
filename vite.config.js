@@ -13,6 +13,20 @@ export default defineConfig({
     },
   },
   plugins: [
+    {
+      name: 'control-cuenta-bloqueada',
+      transformIndexHtml: {
+        order: 'pre',
+        handler(html) {
+          const protegido = html.replace(/<script\s+type="module"\s+src="([^"]+)"\s*><\/script>/g,
+            (_, src) => {
+              const ruta = src.startsWith('/') ? src : '/' + src;
+              return `<script type="module">import { accesoPermitido } from '/src/lib/control-cuenta.js'; if (await accesoPermitido) await import('${ruta}');</script>`;
+            });
+          return protegido.replace('</head>', `<style id="espera-cuenta">body{visibility:hidden}</style><script type="module">import '/src/lib/control-cuenta.js';</script></head>`);
+        },
+      },
+    },
     tailwindcss(),
   ],
 })

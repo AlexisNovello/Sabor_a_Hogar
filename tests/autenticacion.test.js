@@ -96,7 +96,7 @@ test('vuelve al carrito tras el login y rechaza destinos externos o antiguos', a
   rutas.continuarDespuesDelLogin()
   assert.equal(destino, '/carrito.html')
   assert.equal(almacenamiento.size, 0)
-  for (const ruta of ['https://otro.example', '//otro.example', '/entrega.html']) {
+  for (const ruta of ['https://otro.example', '//otro.example', '/pagina-inexistente.html']) {
     almacenamiento.set('paginaDespuesLogin', ruta)
     rutas.continuarDespuesDelLogin()
     assert.equal(destino, '/index.html')
@@ -113,7 +113,7 @@ function elemento() {
   }
 }
 
-async function cargarCarrito(crearPedido) {
+async function cargarCarrito(crearPedido, actualizarPreciosCarrito = async () => false) {
   const elementos = new Map()
   const controles = [elemento(), elemento()]
   const buscar = (selector) => {
@@ -126,6 +126,7 @@ async function cargarCarrito(crearPedido) {
   const almacen = new Map([['carrito', JSON.stringify(carrito)]])
   let redireccion
   await cargar('src/carrito.js', {
+    './services/precios-carrito.js': { actualizarPreciosCarrito },
     './services/pedidos.js': { crearPedido },
     './lib/destino-login.js': { irAlLogin: (ruta) => redireccion = ruta },
   }, {
@@ -167,6 +168,8 @@ test('carrito impide confirmar dos veces y editar cantidades durante el envío',
   const envio = pagina.confirmar()
   assert.ok(pagina.controles.every(control => control.disabled))
   await pagina.confirmar()
+  // Espera a que termine la verificación de precios previa al envío.
+  await new Promise(resolve => setImmediate(resolve))
   assert.equal(llamadas, 1)
   resolver(321)
   await envio
@@ -243,7 +246,7 @@ test('platos: elimina sólo la imagen recién subida si falla el guardado', asyn
   assert.deepEqual(eliminados, ['archivo-nuevo.png'])
 })
 
-test('carta: agrega las porciones elegidas una sola vez y deshabilita los controles', async () => {
+test('carta: edita cantidades y quita solo mediante el botón X', async () => {
   const nodos = new Map()
   const buscar = selector => {
     if (!nodos.has(selector)) {
@@ -259,6 +262,7 @@ test('carta: agrega las porciones elegidas una sola vez y deshabilita los contro
   buscar('#lista-productos').append = () => {}
   const almacen = new Map()
   await cargar('src/main.js', {
+    './lib/cache-navegacion.js': { leerCache: () => null, guardarCache() {} },
     './services/productos.js': { obtenerProductos: async () => [{ id_producto: 1, nombre: 'Pizza', precio: 7000 }] },
   }, {
     document: { querySelector: buscar },
@@ -269,14 +273,23 @@ test('carta: agrega las porciones elegidas una sola vez y deshabilita los contro
   assert.equal(JSON.parse(almacen.get('carrito'))[0].cantidad, 3)
   assert.match(buscar('[data-agregar]').textContent, /En el carrito \(3\)/)
   assert.ok(buscar('[data-agregar]').classList.contains('bg-green-700'))
-  buscar('[data-cantidad]').value = '2'
-  buscar('[data-agregar]').click()
-  assert.equal(JSON.parse(almacen.get('carrito'))[0].cantidad, 3)
-  buscar('[data-cantidad]').value = '-1'
-  buscar('[data-agregar]').click()
-  assert.equal(JSON.parse(almacen.get('carrito'))[0].cantidad, 3)
   assert.equal(buscar('[data-agregar]').disabled, true)
-  assert.equal(buscar('[data-cantidad]').disabled, true)
+  assert.equal(buscar('[data-cantidad]').disabled, false)
+  buscar('[data-cantidad]').value = '2'
+  buscar('[data-cantidad]').listeners.input()
+  assert.equal(JSON.parse(almacen.get('carrito'))[0].cantidad, 2)
+  buscar('[data-cantidad]').value = '-1'
+  buscar('[data-cantidad]').listeners.input()
+  assert.equal(JSON.parse(almacen.get('carrito'))[0].cantidad, 2)
+  buscar('[data-cantidad]').listeners.change()
+  assert.equal(buscar('[data-cantidad]').value, 2)
+  assert.equal(buscar('[data-quitar-carta]').classList.contains('hidden'), false)
+  assert.match(buscar('[data-agregar]').textContent, /En el carrito \(2\)/)
+  buscar('[data-agregar]').click()
+  assert.equal(JSON.parse(almacen.get('carrito')).length, 1)
+  buscar('[data-quitar-carta]').click()
+  assert.equal(JSON.parse(almacen.get('carrito')).length, 0)
+  assert.equal(buscar('[data-agregar]').textContent, 'Agregar al carrito')
 })
 
 test('mis pedidos: filtra por el DNI del perfil autenticado y por estados activos', async () => {
@@ -335,4 +348,141 @@ test('Pages: login y regreso al carrito conservan la base del repositorio', asyn
   almacen.set('paginaDespuesLogin', 'https://externo.example')
   rutas.continuarDespuesDelLogin()
   assert.equal(destino, '/Sabor_a_Hogar/index.html')
+})
+
+async function cargarControlCuenta({ bloqueado = false, sesion = true, error = null, rol = 'cliente', ruta = '/index.html' } = {}) {
+  const nodos = []
+  let visible = false
+  let destino
+  const elemento = () => ({ textContent: '', setAttribute() {}, addEventListener() {}, append(...items) { nodos.push(...items) } })
+  const control = await cargar('src/lib/control-cuenta.js', {
+    './supabase.js': { supabase: {
+      auth: {
+        getSession: async () => ({ data: { session: sesion ? { user: { id: 'cliente' } } : null } }),
+        getUser: async () => ({ data: { user: { id: 'cliente' } } }),
+        onAuthStateChange() {},
+      },
+      from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { bloqueado, rol }, error }) }) }) }),
+    } },
+  }, {
+    document: {
+      body: { replaceChildren() {}, append(...items) { nodos.push(...items) } },
+      createElement: elemento,
+      querySelector: () => ({ remove() { visible = true } }),
+    },
+    __viteEnv: { BASE_URL: '/Sabor_a_Hogar/' },
+    window: { addEventListener() {}, location: { pathname: ruta, replace(valor) { destino = valor } } },
+    setInterval() {},
+    setTimeout() {},
+  })
+  const permitido = await control.accesoPermitido
+  return { permitido, nodos, visible, destino }
+}
+
+test('administración: rechaza visitantes y roles distintos de admin en todas sus páginas', async () => {
+  for (const pagina of ['administrador', 'admin-carta', 'admin-plato', 'admin-stock', 'admin-ingrediente', 'admin-usuarios']) {
+    for (const cuenta of [{ sesion: false }, { rol: 'cliente' }, { rol: 'cocina' }, { rol: 'desconocido' }, { rol: null }]) {
+      const resultado = await cargarControlCuenta({ ...cuenta, ruta: '/Sabor_a_Hogar/' + pagina + '.html' })
+      assert.equal(resultado.permitido, false)
+      assert.equal(resultado.visible, false)
+      assert.equal(resultado.destino, '/Sabor_a_Hogar/index.html')
+    }
+    assert.equal((await cargarControlCuenta({ rol: 'admin', ruta: '/' + pagina + '.html' })).permitido, true)
+  }
+})
+
+test('administración: un admin bloqueado solo ve el aviso de bloqueo', async () => {
+  const resultado = await cargarControlCuenta({ rol: 'admin', bloqueado: true, ruta: '/administrador.html' })
+  assert.equal(resultado.permitido, false)
+  assert.equal(resultado.destino, undefined)
+  assert.ok(resultado.nodos.some(n => n.textContent.includes('Su cuenta ha sido bloqueada.')))
+})
+
+test('cuenta bloqueada: impide cargar la página y ofrece solamente cerrar sesión', async () => {
+  const resultado = await cargarControlCuenta({ bloqueado: true })
+  assert.equal(resultado.permitido, false)
+  assert.equal(resultado.visible, false)
+  assert.ok(resultado.nodos.some(n => n.textContent.includes('alexis_novello99@hotmail.com')))
+  assert.ok(resultado.nodos.some(n => n.textContent === 'Cerrar sesión'))
+})
+
+test('cuenta activa y visitante: permiten cargar la página', async () => {
+  assert.equal((await cargarControlCuenta()).permitido, true)
+  assert.equal((await cargarControlCuenta({ sesion: false })).permitido, true)
+})
+
+test('si falla la consulta del bloqueo, no habilita el resto de la página', async () => {
+  assert.equal((await cargarControlCuenta({ error: new Error('Sin conexión') })).permitido, false)
+})
+
+test('caché de navegación: conserva datos válidos y descarta vencidos o corruptos', async () => {
+  const almacen = new Map()
+  const cache = await cargar('src/lib/cache-navegacion.js', {}, {
+    localStorage: { getItem: k => almacen.get(k), setItem: (k, v) => almacen.set(k, v), removeItem: k => almacen.delete(k) },
+  })
+  cache.guardarCache('carta', [{ id_producto: 1 }])
+  assert.equal(cache.leerCache('carta')[0].id_producto, 1)
+  almacen.set('carta', JSON.stringify({ fecha: Date.now() - 400000, datos: [] }))
+  assert.equal(cache.leerCache('carta'), null)
+  almacen.set('carta', 'invalido')
+  assert.equal(cache.leerCache('carta'), null)
+  cache.guardarCache('pedidos:cuenta1', [{ id_pedido: 1 }])
+  assert.equal(cache.leerCache('pedidos:cuenta2'), null)
+  cache.borrarCache('pedidos:cuenta1')
+  assert.equal(cache.leerCache('pedidos:cuenta1'), null)
+})
+
+test('caché de navegación: funciona sin almacenamiento disponible', async () => {
+  const cache = await cargar('src/lib/cache-navegacion.js', {}, {
+    localStorage: { getItem() { throw new Error('No disponible') }, setItem() { throw new Error('Sin espacio') }, removeItem() { throw new Error('No disponible') } },
+  })
+  assert.equal(cache.leerCache('carta'), null)
+  cache.guardarCache('carta', [])
+  cache.borrarCache('carta')
+})
+
+test('precios del carrito: usa el precio actual y mantiene cantidades', async () => {
+  const servicio = await cargar('src/services/precios-carrito.js', {
+    '../lib/supabase.js': { supabase: { from: () => ({ select: () => ({ in: async () => ({ data: [{ id_producto: 7, precio: '1500.50' }] }) }) }) } },
+  })
+  const items = [{ id_producto: 7, precio: 999, cantidad: 2 }]
+  assert.equal(await servicio.actualizarPreciosCarrito(items), true)
+  assert.equal(items[0].precio, 1500.5)
+  assert.equal(items[0].cantidad, 2)
+  assert.equal(await servicio.actualizarPreciosCarrito(items), false)
+})
+
+test('carrito: si cambia el precio al confirmar, actualiza el total y exige otra confirmación', async () => {
+  let consultas = 0
+  let pedidos = 0
+  const pagina = await cargarCarrito(async () => { pedidos++; return 456 }, async items => {
+    consultas++
+    if (consultas === 2) { items[0].precio = 1500; return true }
+    return false
+  })
+  await pagina.confirmar()
+  assert.equal(pedidos, 0)
+  assert.equal(JSON.parse(pagina.almacen.get('carrito'))[0].precio, 1500)
+  assert.match(pagina.buscar('#mensaje-pedido').textContent, /precios cambiaron/)
+  assert.match(pagina.buscar('#total-carrito').textContent, /3.000/)
+  await pagina.confirmar()
+  assert.equal(pedidos, 1)
+})
+
+test('carrito: un error al verificar precios impide enviar y conserva los productos', async () => {
+  let pedidos = 0
+  const pagina = await cargarCarrito(async () => pedidos++, async () => { throw new Error('Sin conexión') })
+  await pagina.confirmar()
+  assert.equal(pedidos, 0)
+  assert.ok(pagina.almacen.has('carrito'))
+  assert.equal(pagina.buscar('#confirmar-pedido').disabled, false)
+})
+
+test('precios: si falta un producto, no modifica parcialmente el carrito', async () => {
+  const servicio = await cargar('src/services/precios-carrito.js', {
+    '../lib/supabase.js': { supabase: { from: () => ({ select: () => ({ in: async () => ({ data: [{ id_producto: 7, precio: 1500 }] }) }) }) } },
+  })
+  const items = [{ id_producto: 7, precio: 999 }, { id_producto: 8, precio: 100 }]
+  await assert.rejects(servicio.actualizarPreciosCarrito(items), /verificar el precio/)
+  assert.equal(items[0].precio, 999)
 })
