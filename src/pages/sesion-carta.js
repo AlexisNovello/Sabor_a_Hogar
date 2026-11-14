@@ -53,6 +53,7 @@ obtenerSesion().then(mostrarSesion).catch((error) => {
 })
 
 botonCerrarSesion.addEventListener('click', async () => {
+  if (botonCerrarSesion.disabled || !window.confirm('¿Querés cerrar sesión?')) return
   botonCerrarSesion.disabled = true
   mensaje.textContent = ''
   try {

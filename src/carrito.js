@@ -1,5 +1,6 @@
 import { crearPedido } from "./services/pedidos.js";
 import { irAlLogin } from "./lib/destino-login.js";
+import { actualizarPreciosCarrito } from './services/precios-carrito.js';
 
 // trae los productos guardados en el navegador
 const carritoGuardado = localStorage.getItem("carrito");
@@ -10,6 +11,18 @@ const plantilla = document.querySelector("#plantilla-item-carrito");
 const botonConfirmar = document.querySelector("#confirmar-pedido");
 const mensajePedido = document.querySelector("#mensaje-pedido");
 let guardando = false;
+const preciosEnPantalla = new Map();
+
+async function sincronizarPrecios() {
+  const cambios = await actualizarPreciosCarrito(carrito);
+  if (carrito.length) localStorage.setItem('carrito', JSON.stringify(carrito));
+  for (const item of carrito) {
+    const etiqueta = preciosEnPantalla.get(item.id_producto);
+    if (etiqueta) etiqueta.textContent = formatoPrecio.format(item.precio);
+  }
+  actualizarTotal();
+  return cambios;
+}
 
 // mensaje si el carrito esta vacio
 if (carrito.length === 0) {
@@ -22,6 +35,14 @@ const formatoPrecio = new Intl.NumberFormat("es-AR", {
   maximumFractionDigits: 0,
 });
 
+try {
+  if (await sincronizarPrecios()) {
+    mensajePedido.textContent = 'Se actualizaron los precios del carrito. Revisá el nuevo total antes de confirmar.';
+  }
+} catch (error) {
+  mensajePedido.textContent = 'No se pudieron actualizar los precios. Se volverán a verificar antes de confirmar el pedido.';
+}
+
 // crea una tarjeta para cada producto del carrito
 for (const producto of carrito) {
   const copia = plantilla.content.cloneNode(true);
@@ -33,12 +54,14 @@ for (const producto of carrito) {
   copia.querySelector("[data-precio]").textContent = formatoPrecio.format(
     producto.precio,
   );
+  preciosEnPantalla.set(producto.id_producto, copia.querySelector('[data-precio]'));
   copia.querySelector("[data-input-cantidad]").value = producto.cantidad;
 
   // elimina el producto seleccionado y guarda los cambios
   const botonQuitar = copia.querySelector("[data-quitar]");
 
   botonQuitar.addEventListener("click", () => {
+    if (guardando) return;
     const posicion = carrito.findIndex(
       (item) => item.id_producto === producto.id_producto,
     );
@@ -78,6 +101,7 @@ for (const producto of carrito) {
   }
 
   inputCantidad.addEventListener("change", () => {
+    if (guardando) return;
     const nuevaCantidad = Number(inputCantidad.value);
 
     if (!Number.isInteger(nuevaCantidad) || nuevaCantidad < 1) {
@@ -134,6 +158,15 @@ botonConfirmar.addEventListener("click", async () => {
   );
 
   try {
+    try {
+      if (await sincronizarPrecios()) {
+        mensajePedido.textContent = 'Los precios cambiaron. Actualizamos el carrito y el total. Revisalos y presioná Confirmar pedido nuevamente.';
+        return;
+      }
+    } catch (error) {
+      mensajePedido.textContent = 'No se pudieron verificar los precios actuales. Tus productos siguen en el carrito. Intentá confirmar nuevamente.';
+      return;
+    }
     const idPedido = await crearPedido(carrito);
 
     //limpiar el carrito solamente despuees de guardar

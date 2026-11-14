@@ -1,6 +1,7 @@
 import { obtenerMisPedidos } from './services/pedidos.js'
 import { irAlLogin } from './lib/destino-login.js'
 import { supabase } from './lib/supabase.js'
+import { leerCache, guardarCache, borrarCache } from './lib/cache-navegacion.js'
 
 const lista = document.querySelector('#lista-mis-pedidos')
 const plantilla = document.querySelector('#plantilla-mi-pedido')
@@ -8,18 +9,11 @@ const mensaje = document.querySelector('#mensaje-pedidos')
 const actualizar = document.querySelector('#actualizar-pedidos')
 const ingresar = document.querySelector('#ingresar-pedidos')
 let version = 0
+let claveCache = null
 const fecha = new Intl.DateTimeFormat('es-AR', { dateStyle: 'short', timeStyle: 'short' })
 
-async function cargar() {
-  const solicitud = ++version
-  actualizar.disabled = true
-  ingresar.classList.add('hidden')
-  ingresar.classList.remove('inline-block')
-  lista.replaceChildren()
-  mensaje.textContent = 'Cargando tus pedidos...'
-  try {
-    const pedidos = await obtenerMisPedidos()
-    if (solicitud !== version) return
+function mostrarPedidos(pedidos) {
+    lista.replaceChildren()
     for (const pedido of pedidos) {
       const copia = plantilla.content.cloneNode(true)
       copia.querySelector('[data-numero]').textContent = 'Pedido n.º ' + pedido.id_pedido
@@ -38,9 +32,35 @@ async function cargar() {
       lista.append(copia)
     }
     mensaje.textContent = pedidos.length ? '' : 'No tenés pedidos pendientes.'
+}
+
+async function cargar() {
+  const solicitud = ++version
+  actualizar.disabled = true
+  ingresar.classList.add('hidden')
+  ingresar.classList.remove('inline-block')
+  lista.replaceChildren()
+  mensaje.textContent = 'Cargando tus pedidos...'
+  try {
+    const { data, error: errorSesion } = await supabase.auth.getSession()
+    if (solicitud !== version) return
+    if (errorSesion) throw errorSesion
+    claveCache = data.session ? 'sabor:pedidos:v1:' + data.session.user.id : null
+    const claveSolicitud = claveCache
+    const guardados = claveSolicitud ? leerCache(claveSolicitud, 60000) : null
+    if (guardados) {
+      mostrarPedidos(guardados)
+      mensaje.textContent = 'Actualizando el estado de tus pedidos...'
+    }
+    const pedidos = await obtenerMisPedidos()
+    if (solicitud !== version) return
+    if (claveSolicitud) guardarCache(claveSolicitud, pedidos)
+    mostrarPedidos(pedidos)
   } catch (error) {
     if (solicitud !== version) return
     if (error.code === 'AUTH_REQUIRED') {
+      lista.replaceChildren()
+      if (claveCache) borrarCache(claveCache)
       mensaje.textContent = 'Iniciá sesión para consultar tus pedidos.'
       ingresar.classList.remove('hidden')
       ingresar.classList.add('inline-block')
@@ -58,8 +78,11 @@ ingresar.addEventListener('click', (evento) => {
 })
 actualizar.addEventListener('click', cargar)
 // Limpia los pedidos al cambiar o cerrar la cuenta en otra pestaña.
-supabase.auth.onAuthStateChange(() => {
+supabase.auth.onAuthStateChange((evento) => {
+  if (evento === 'INITIAL_SESSION') return
   ++version
+  if (claveCache) borrarCache(claveCache)
+  claveCache = null
   lista.replaceChildren()
   setTimeout(cargar, 0)
 })

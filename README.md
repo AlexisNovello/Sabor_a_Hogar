@@ -78,11 +78,11 @@ Catálogo conectado a Supabase, carrito persistido en el navegador, creación de
 - Antes de llamar a `crear_pedido`, se verifica el usuario con Supabase Auth. Se mantiene el contrato actual: `{ productos: [{ id_producto, cantidad }] }`. Los precios no se envían desde el navegador.
 - El cierre de sesión conserva el carrito de este navegador. El carrito no está separado por cuenta; en dispositivos compartidos, revisá sus productos antes de confirmar.
 - Las rutas antiguas `/contraseña.html` y `/registrocliente.html` redirigen a las nuevas pantallas.
-- La compilación incluye todas las páginas HTML de la raíz. El flujo de pedidos sigue usando retiro en el local; delivery continúa pendiente.
+- La compilación incluye todas las páginas HTML de la raíz. La única modalidad de los pedidos es el retiro en el local.
 
 ### Configuración pendiente de verificar en Supabase
 
-El repositorio no contiene el esquema SQL ni migraciones. El registro envía nombre, apellido, DNI, teléfono y dirección como metadata a Supabase Auth; la creación del perfil en `public.usuario` depende del trigger existente en la base de datos. Hay que verificar que sus columnas y el vínculo con `auth.users.id` sean compatibles.
+El SQL disponible, las migraciones y las instrucciones para exportar la configuración se encuentran en [supabase/README.md](supabase/README.md). La copia inicial todavía no permite reconstruir una base vacía. El registro envía nombre, apellido, DNI, teléfono y dirección como metadata a Supabase Auth; la creación del perfil en `public.usuario` depende del trigger existente en la base de datos. Hay que verificar que sus columnas y el vínculo con `auth.users.id` sean compatibles.
 
 En Authentication, verificá que el proveedor Email esté habilitado, la confirmación de correo tenga la configuración deseada y las URL del sitio y de redirección correspondan al entorno donde se prueba o publica.
 

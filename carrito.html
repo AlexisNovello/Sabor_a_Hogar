@@ -13,7 +13,7 @@
         <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
         <a
           href="index.html"
-          class="h-10 bg-red-700 rounded-md px-4 py-2 font-semibold text-white cursor-pointer hover:bg-red-800"
+          class="h-10 border border-white/60 bg-red-700 rounded-md px-4 py-2 font-semibold text-white cursor-pointer hover:bg-red-800"
         >
           Volver al Menu
         </a>
@@ -21,8 +21,12 @@
     </header>
 
     <main class="max-w-6xl mx-auto p-6">
-      <h2 class="text-2xl font-semibold mt-6">Mi Carrito</h2>
-      <a id="ver-mis-pedidos" href="mis-pedidos.html" class="hidden mt-4 inline-block rounded-md bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700">Ver mis pedidos</a>
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
+        <div class="titulo-carta">
+          <h2>Mi carrito</h2>
+        </div>
+        <a id="ver-mis-pedidos" href="mis-pedidos.html" class="inline-block rounded-md bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700">Ver mis pedidos</a>
+      </div>
       <p id="mensaje-pedido" class="mt-4 text-sm empty:hidden" role="status" aria-live="polite"></p>
 
       <!-- Lista de Productos en el Carrito -->
@@ -32,35 +36,10 @@
       <div
         class="mt-8 border-t border-gray-300 pt-6 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-end sm:gap-12"
       >
-        <fieldset class="min-w-0">
-          <legend class="text-xl font-semibold text-gray-600 mb-3">
-            Método de entrega
-          </legend>
-
-          <div class="flex flex-col gap-4 text-xl">
-            <label class="flex items-center gap-3 cursor-pointer">
-              <input
-                type="radio"
-                name="metodo-entrega"
-                value="domicilio"
-                class="h-5 w-5 accent-red-600"
-                disabled
-              />
-              Envío a domicilio
-            </label>
-
-            <label class="flex items-center gap-3 cursor-pointer">
-              <input
-                type="radio"
-                name="metodo-entrega"
-                value="retiro"
-                class="h-5 w-5 accent-red-600"
-                checked
-              />
-              Retiro en el local
-            </label>
-          </div>
-        </fieldset>
+        <div class="min-w-0">
+          <h3 class="text-xl font-semibold text-gray-600 mb-3">Retiro en el local</h3>
+          <p class="text-gray-600">Todos los pedidos se retiran en el local.</p>
+        </div>
 
         <div class="flex flex-col items-end gap-3 shrink-0">
           <div class="text-right">
