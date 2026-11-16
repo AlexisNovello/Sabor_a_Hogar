@@ -11,7 +11,7 @@
       <div
         class="max-w-6xl mx-auto p-6 flex justify-between items-center gap-4"
       >
-        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+        <h1 class="text-3xl font-bold"><a href="index.html">Sabor a Hogar</a></h1>
         <a
           href="admin-carta.html"
           class="rounded-md border border-white/60 bg-red-700 px-4 py-2 font-semibold hover:bg-red-800"
@@ -82,7 +82,7 @@
               id="nombre-plato"
               type="text"
               required
-              maxlength="150"
+              maxlength="100"
               placeholder="Ej.: Hamburguesa"
               class="mt-2 w-full border border-gray-400 rounded-md px-4 py-2"
             />
@@ -111,6 +111,7 @@
               id="precio-plato"
               type="number"
               min="0.01"
+              max="99999999.99"
               step="0.01"
               required
               placeholder="Ej.: 8700"

@@ -1,10 +1,13 @@
+import { leerCarrito, guardarCarrito } from './lib/carrito-local.js';
 import { obtenerProductos } from "./services/productos.js";
 import { leerCache, guardarCache } from './lib/cache-navegacion.js';
 
 const claveCarta = 'sabor:carta:v1';
 const guardados = leerCache(claveCarta);
-const productos = guardados ?? await obtenerProductos();
-if (!guardados) guardarCache(claveCarta, productos);
+let productos = guardados ?? [];
+let cargandoCarta = false;
+const mensajeCarta = document.querySelector('#mensaje-carga-carta');
+const reintentarCarta = document.querySelector('#reintentar-carta');
 
 // llama los elementos del html
 const lista = document.querySelector("#lista-productos");
@@ -14,12 +17,11 @@ const plantilla = document.querySelector("#plantilla-producto");
 const formatoPrecio = new Intl.NumberFormat("es-AR", {
   style: "currency",
   currency: "ARS",
-  maximumFractionDigits: 0,
+  minimumFractionDigits: 2, maximumFractionDigits: 2, trailingZeroDisplay: "stripIfInteger",
 });
 
 // Array del carrito que contendrá los productos seleccionados
-const carritoGuardado = localStorage.getItem("carrito");
-const carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
+const carrito = leerCarrito();
 
 // crea una tarjeta por cada producto recibido de Supabase
 function mostrarProductos(productos) {
@@ -94,21 +96,21 @@ function mostrarProductos(productos) {
     cantidad.addEventListener('input', () => {
       cantidad.setCustomValidity('');
       const porciones = Number(cantidad.value);
-      if (!Number.isSafeInteger(porciones) || porciones < 1) {
-        cantidad.setCustomValidity('Ingresá una cantidad entera de al menos una porción.');
+      if (!Number.isSafeInteger(porciones) || porciones < 1 || porciones > 2147483647) {
+        cantidad.setCustomValidity('Ingresá una cantidad entera entre 1 y 2147483647 porciones.');
         return;
       }
       const item = carrito.find(item => item.id_producto === producto.id_producto);
       if (item) {
         item.cantidad = porciones;
-        localStorage.setItem('carrito', JSON.stringify(carrito));
+        guardarCarrito(carrito);
         actualizarBoton();
         mensaje.textContent = '';
       }
     });
     cantidad.addEventListener('change', () => {
       const numero = Number(cantidad.value);
-      if (!Number.isSafeInteger(numero) || numero < 1) {
+      if (!Number.isSafeInteger(numero) || numero < 1 || numero > 2147483647) {
         cantidad.value = carrito.find(item => item.id_producto === producto.id_producto)?.cantidad ?? 1;
         cantidad.setCustomValidity('');
       }
@@ -117,7 +119,7 @@ function mostrarProductos(productos) {
       const posicion = carrito.findIndex(item => item.id_producto === producto.id_producto);
       if (posicion !== -1) {
         carrito.splice(posicion, 1);
-        localStorage.setItem('carrito', JSON.stringify(carrito));
+        guardarCarrito(carrito);
         cantidad.value = 1;
         cantidad.setCustomValidity('');
         actualizarBoton();
@@ -129,9 +131,9 @@ function mostrarProductos(productos) {
       if (carrito.some(item => item.id_producto === producto.id_producto)) return;
       if (sinStock) return;
       const porciones = Number(cantidad.value);
-      if (!Number.isSafeInteger(porciones) || porciones < 1) {
+      if (!Number.isSafeInteger(porciones) || porciones < 1 || porciones > 2147483647) {
         cantidad.setCustomValidity(
-          "Ingresá una cantidad entera de al menos una porción.",
+          "Ingresá una cantidad entera entre 1 y 2147483647 porciones.",
         );
         cantidad.reportValidity();
         return;
@@ -155,7 +157,7 @@ function mostrarProductos(productos) {
         });
       }
 
-      localStorage.setItem("carrito", JSON.stringify(carrito)); // guardamos los datos
+      guardarCarrito(carrito); // guardamos los datos
       actualizarBoton();
       mensaje.textContent = '';
     });
@@ -164,7 +166,7 @@ function mostrarProductos(productos) {
     lista.append(copia);
   }
 }
-mostrarProductos(productos);
+if (guardados) mostrarProductos(productos);
 
 // llama los elementos del buscador
 const formularioBusqueda = document.querySelector("#formulario-busqueda");
@@ -201,14 +203,30 @@ formularioBusqueda.addEventListener("submit", (evento) => {
 // actualiza los resultados mientras se escribe o se borra
 buscarProductos.addEventListener("input", filtrarProductos);
 
-// La copia local permite volver sin esperar otra descarga del catálogo.
-// La base sigue validando precio, publicación y stock al confirmar el pedido.
-if (guardados) {
-  obtenerProductos().then((actuales) => {
+// Conserva la carta visible si falla su actualización.
+async function cargarCarta() {
+  if (cargandoCarta) return;
+  cargandoCarta = true;
+  reintentarCarta.disabled = true;
+  mensajeCarta.textContent = guardados || productos.length ? 'Actualizando la carta...' : 'Cargando la carta...';
+  try {
+    const actuales = await obtenerProductos();
     guardarCache(claveCarta, actuales);
-    if (JSON.stringify(actuales) !== JSON.stringify(productos)) {
-      mostrarProductos(actuales);
-      filtrarProductos();
-    }
-  }).catch((error) => console.error('No se pudo actualizar la carta:', error));
+    productos = actuales;
+    mostrarProductos(productos);
+    filtrarProductos();
+    mensajeCarta.textContent = '';
+    reintentarCarta.classList.add('hidden');
+  } catch (error) {
+    console.error('No se pudo cargar la carta:', error);
+    mensajeCarta.textContent = guardados || productos.length
+      ? 'No se pudo actualizar la carta. La disponibilidad y los precios se verificarán al confirmar el pedido.'
+      : 'No se pudo cargar la carta. Revisá tu conexión e intentá nuevamente.';
+    reintentarCarta.classList.remove('hidden');
+  } finally {
+    cargandoCarta = false;
+    reintentarCarta.disabled = false;
+  }
 }
+reintentarCarta.addEventListener('click', cargarCarta);
+await cargarCarta();

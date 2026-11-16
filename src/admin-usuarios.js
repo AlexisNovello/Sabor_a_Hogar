@@ -4,12 +4,21 @@ import { obtenerUsuarios, actualizarBloqueo } from "./services/usuarios.js";
 const lista = document.querySelector("#lista-usuarios-admin");
 const plantilla = document.querySelector("#plantilla-usuario-admin");
 
+const mensaje = document.querySelector('#mensaje-usuarios');
+const reintentar = document.querySelector('#reintentar-usuarios');
+let cargando = false;
 async function cargarUsuarios() {
+  if (cargando) return;
+  cargando = true;
+  reintentar.disabled = true;
+  mensaje.textContent = 'Cargando usuarios...';
   try {
     const usuarios = await obtenerUsuarios();
 
     // limpia la lista antes de cargar los usuarios
     lista.replaceChildren();
+    mensaje.textContent = usuarios.length ? '' : 'No hay usuarios registrados.';
+    reintentar.classList.add('hidden');
 
     // crea una tarjeta por cada usuario recibido de Supabase
     for (const usuario of usuarios) {
@@ -85,6 +94,7 @@ async function cargarUsuarios() {
           botonBloquear.disabled = true;
           botonBloquear.textContent = "Guardando...";
 
+          mensaje.textContent = '';
           try {
             const actualizado = await actualizarBloqueo(
               usuario.dni,
@@ -95,6 +105,7 @@ async function cargarUsuarios() {
             usuario.bloqueado = actualizado.bloqueado;
           } catch (error) {
             console.error("Error al actualizar el bloqueo:", error);
+            mensaje.textContent = 'No se pudo cambiar el bloqueo de la cuenta. Intentá nuevamente.';
           } finally {
             actualizarBoton();
             botonBloquear.disabled = false;
@@ -107,7 +118,13 @@ async function cargarUsuarios() {
     }
   } catch (error) {
     console.error("Error al cargar los usuarios:", error);
+    mensaje.textContent = 'No se pudieron cargar los usuarios. Revisá tu conexión e intentá nuevamente.';
+    reintentar.classList.remove('hidden');
+  } finally {
+    cargando = false;
+    reintentar.disabled = false;
   }
 }
 
-cargarUsuarios();
+reintentar.addEventListener('click', cargarUsuarios);
+await cargarUsuarios();

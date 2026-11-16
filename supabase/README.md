@@ -10,7 +10,10 @@
 
 1. `202611010001_vincular_pedido_cliente.sql`: versión histórica de pedidos. No ejecutar aisladamente sobre una base actual: reemplaza la función con una versión anterior.
 2. `202611140001_rechazar_pedidos_cuentas_bloqueadas.sql`: conserva la función real recibida, incluidos publicación, recetas, bloqueo y descuento transaccional de stock.
-3. `202611140002_restringir_permisos.sql`: propuesta de permisos para administrador, cocina, clientes y visitantes. Su aplicación en Supabase no está confirmada en este repositorio.
+3. `202611140002_restringir_permisos.sql`: permisos para administrador, cocina, clientes y visitantes. La exportación del 15 de noviembre de 2026 confirma una configuración coherente con esta migración; no hace falta volver a ejecutarla por la advertencia del snapshot anterior.
+
+4. `202611150001_validar_transiciones_pedido.sql`: valida los avances de estado de pedidos.
+5. `202611150002_ajustar_storage_productos.sql`: permite subir y limpiar fotos a administradores activos en el bucket productos.
 
 Los snapshots son documentación; no ejecutar todos los archivos SQL indiscriminadamente. Revisar el estado remoto y aplicar únicamente las migraciones pendientes en orden.
 
@@ -21,6 +24,6 @@ Los snapshots son documentación; no ejecutar todos los archivos SQL indiscrimin
 3. Agregar las modificaciones de la base como una nueva migración; no sobrescribir migraciones ya aplicadas.
 4. Probar con cuentas de cada rol, no solo desde SQL Editor, y versionar los archivos junto con el código.
 
-## Límites de la copia inicial
+## Límites de las exportaciones
 
-Todavía faltan las definiciones completas de tablas: longitudes, precisión numérica, PK, FK, CHECK, índices, identidades/secuencias y sus permisos. Las columnas compartidas no alcanzan para reconstruir fielmente una base vacía. Tampoco se exportaron Storage, proveedores y configuración de Auth, extensiones ni secretos. La consulta incluida permite obtener más detalle sin inventar estas definiciones.
+La exportación del 15 de noviembre incorpora longitudes, precisión numérica, PK, FK, CHECK, índices, identidades/secuencias y permisos que faltaban en la copia inicial. Todavía no hay un script de instalación desde cero probado. No se exportaron Storage, proveedores y configuración de Auth, extensiones, roles personalizados/herencia ni secretos. No ejecutar el snapshot como una migración.

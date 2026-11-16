@@ -54,19 +54,29 @@ export async function obtenerPedidos() {
 }
 
 // actualiza el estado del pedido
-export async function actualizarEstadoPedido(idPedido, nuevoEstado) {
+export async function actualizarEstadoPedido(idPedido, nuevoEstado, estadoAnterior) {
   await exigirRolCocina();
+  const siguientes = { Pendiente: 'En preparación', 'En preparación': 'Listo' };
+  if (!Object.hasOwn(siguientes, estadoAnterior) || siguientes[estadoAnterior] !== nuevoEstado) {
+    throw new Error('La transición del pedido no es válida.');
+  }
   const { data, error } = await supabase
     .from("pedido")
     .update({ estado_pedido: nuevoEstado })
     .eq("id_pedido", idPedido)
+    .eq("estado_pedido", estadoAnterior)
     .select("id_pedido, estado_pedido")
-    .single();
+    .maybeSingle();
 
   if (error) {
     throw error;
   }
 
+  if (!data) {
+    const conflicto = new Error('El pedido cambió en otra sesión o ya no está disponible. Actualizá las comandas.');
+    conflicto.code = 'PEDIDO_DESACTUALIZADO';
+    throw conflicto;
+  }
   return data;
 }
 

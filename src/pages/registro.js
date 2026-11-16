@@ -77,20 +77,20 @@ function ocultarMensaje() {
  */
 function validarDatosPersonales() {
   // trim() elimina espacios innecesarios al principio y al final.
-  if (nombre.value.trim().length < 2) {
-    mostrarMensaje('Ingresá un nombre válido.')
+  if (nombre.value.trim().length < 2 || nombre.value.trim().length > 50) {
+    mostrarMensaje('Ingresá un nombre válido de hasta 50 caracteres.')
     nombre.focus()
     return false
   }
 
-  if (apellido.value.trim().length < 2) {
-    mostrarMensaje('Ingresá un apellido válido.')
+  if (apellido.value.trim().length < 2 || apellido.value.trim().length > 50) {
+    mostrarMensaje('Ingresá un apellido válido de hasta 50 caracteres.')
     apellido.focus()
     return false
   }
 
   // El navegador revisa que el correo tenga un formato válido.
-  if (!email.value.trim() || !email.validity.valid) {
+  if (!email.value.trim() || !email.validity.valid || email.value.trim().length > 255) {
     mostrarMensaje('Ingresá un correo electrónico válido.')
     email.focus()
     return false
@@ -154,6 +154,11 @@ function validarDireccion() {
     return false
   }
 
+  if (construirDireccion().length > 100) {
+    mostrarMensaje('La dirección completa admite hasta 100 caracteres. Acortá la calle, el piso o la referencia.');
+    calle.focus();
+    return false;
+  }
   return true
 }
 

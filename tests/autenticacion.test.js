@@ -6,7 +6,12 @@ import vm from 'node:vm'
 async function cargar(archivo, dependencias = {}, globals = {}) {
   const contexto = vm.createContext({ console, ...globals })
   const modulo = new vm.SourceTextModule(await readFile(new URL('../' + archivo, import.meta.url), 'utf8'), { context: contexto, initializeImportMeta(meta) { meta.env = globals.__viteEnv || {} } })
-  await modulo.link((nombre) => {
+  await modulo.link(async (nombre) => {
+    if (nombre === './lib/carrito-local.js') {
+      const persistencia = new vm.SourceTextModule(await readFile(new URL('../src/lib/carrito-local.js', import.meta.url), 'utf8'), { context: contexto });
+      await persistencia.link(() => { throw new Error('Dependencia inesperada'); });
+      return persistencia;
+    }
     const exports = dependencias[nombre]
     if (nombre === './auth.js' && exports && !exports.exigirRolCocina) exports.exigirRolCocina = async () => {}
     assert.ok(exports, 'Dependencia inesperada: ' + nombre)
@@ -113,7 +118,7 @@ function elemento() {
   }
 }
 
-async function cargarCarrito(crearPedido, actualizarPreciosCarrito = async () => false) {
+async function cargarCarrito(crearPedido, actualizarPreciosCarrito = async () => false, contenido = JSON.stringify(carrito)) {
   const elementos = new Map()
   const controles = [elemento(), elemento()]
   const buscar = (selector) => {
@@ -123,7 +128,7 @@ async function cargarCarrito(crearPedido, actualizarPreciosCarrito = async () =>
   buscar('#plantilla-item-carrito').content = { cloneNode: () => ({ querySelector: buscar }) }
   buscar('#lista-carrito').append = () => {}
   buscar('#lista-carrito').querySelectorAll = () => controles
-  const almacen = new Map([['carrito', JSON.stringify(carrito)]])
+  const almacen = new Map([['carrito', contenido]])
   let redireccion
   await cargar('src/carrito.js', {
     './services/precios-carrito.js': { actualizarPreciosCarrito },
@@ -198,6 +203,16 @@ test('registro valida el primer paso con Enter sin enviar campos de dirección o
   await enviar()
   assert.match(buscar('#mensaje-registro').textContent, /calle válida/)
   assert.equal(llamadas, 0)
+  buscar('#calle').value = 'A'.repeat(90);
+  buscar('#altura').value = '123';
+  buscar('#referencia').value = 'Una referencia demasiado larga';
+  await enviar();
+  assert.match(buscar('#mensaje-registro').textContent, /hasta 100 caracteres/);
+  assert.equal(llamadas, 0);
+  buscar('#nombre').value = 'A'.repeat(51);
+  await enviar();
+  assert.match(buscar('#mensaje-registro').textContent, /hasta 50 caracteres/);
+  assert.equal(llamadas, 0);
 })
 
 test('platos: valida descripción, precio y URL', async () => {
@@ -260,14 +275,16 @@ test('carta: edita cantidades y quita solo mediante el botón X', async () => {
   }
   buscar('#plantilla-producto').content = { cloneNode: () => ({ querySelector: buscar }) }
   buscar('#lista-productos').append = () => {}
+  buscar('#lista-productos').querySelectorAll = () => []
   const almacen = new Map()
   await cargar('src/main.js', {
     './lib/cache-navegacion.js': { leerCache: () => null, guardarCache() {} },
-    './services/productos.js': { obtenerProductos: async () => [{ id_producto: 1, nombre: 'Pizza', precio: 7000 }] },
+    './services/productos.js': { obtenerProductos: async () => [{ id_producto: 1, nombre: 'Pizza', precio: 1250.50 }] },
   }, {
     document: { querySelector: buscar },
     localStorage: { getItem: clave => almacen.get(clave), setItem: (clave, valor) => almacen.set(clave, valor) },
   })
+  assert.match(buscar('[data-precio]').textContent, /1\.250,50/);
   buscar('[data-cantidad]').value = '3'
   buscar('[data-agregar]').click()
   assert.equal(JSON.parse(almacen.get('carrito'))[0].cantidad, 3)
@@ -486,3 +503,196 @@ test('precios: si falta un producto, no modifica parcialmente el carrito', async
   await assert.rejects(servicio.actualizarPreciosCarrito(items), /verificar el precio/)
   assert.equal(items[0].precio, 999)
 })
+
+for (const caso of [
+  { archivo: 'src/main.js', servicio: './services/productos.js', funcion: 'obtenerProductos', mensaje: '#mensaje-carga-carta', boton: '#reintentar-carta', vacio: 'No hay productos disponibles.' },
+  { archivo: 'src/stock.js', servicio: './services/stock.js', funcion: 'obtenerStock', mensaje: '#mensaje-stock', boton: '#reintentar-stock', vacio: 'No hay ingredientes cargados.' },
+  { archivo: 'src/admin-usuarios.js', servicio: './services/usuarios.js', funcion: 'obtenerUsuarios', mensaje: '#mensaje-usuarios', boton: '#reintentar-usuarios', vacio: 'No hay usuarios registrados.' },
+]) {
+  test(caso.archivo + ': permite reintentar luego de fallar la carga', async () => {
+    const nodos = new Map();
+    const buscar = selector => {
+      if (!nodos.has(selector)) {
+        const nodo = elemento();
+        nodo.replaceChildren = () => {};
+        nodo.querySelectorAll = () => [];
+        nodos.set(selector, nodo);
+      }
+      return nodos.get(selector);
+    };
+    let llamadas = 0;
+    const dependencias = {
+      [caso.servicio]: {
+        [caso.funcion]: async () => {
+          llamadas++;
+          if (llamadas === 1) throw new Error('Sin conexion');
+          return [];
+        },
+        actualizarCantidad() {}, actualizarNombreIngrediente() {}, eliminarIngrediente() {}, actualizarBloqueo() {},
+      },
+      './lib/cache-navegacion.js': { leerCache: () => null, guardarCache() {} },
+    };
+    await cargar(caso.archivo, dependencias, {
+      document: { querySelector: buscar },
+      localStorage: { getItem: () => null },
+      console: { error() {} },
+    });
+    assert.match(buscar(caso.mensaje).textContent, /No se pud/);
+    assert.equal(buscar(caso.boton).classList.contains('hidden'), false);
+    assert.equal(buscar(caso.boton).disabled, false);
+    await buscar(caso.boton).click();
+    assert.equal(llamadas, 2);
+    assert.equal(buscar(caso.boton).classList.contains('hidden'), true);
+    assert.equal(buscar(caso.boton).disabled, false);
+    if (caso.archivo !== 'src/main.js') assert.equal(buscar(caso.mensaje).textContent, caso.vacio);
+    else assert.equal(buscar('#lista-productos').textContent, caso.vacio);
+  });
+}
+
+for (const contenido of ['{', 'null', '{}', '42', '"texto"', '[null,false,{},[],{"id_producto":1,"cantidad":-1,"precio":10}]']) {
+  test('carrito dañado: recupera la pantalla con ' + contenido, async () => {
+    let pedidos = 0;
+    const pagina = await cargarCarrito(async () => pedidos++, async () => false, contenido);
+    assert.equal(pagina.buscar('#confirmar-pedido').disabled, true);
+    assert.match(pagina.buscar('#lista-carrito').textContent, /vacío/);
+    assert.equal(pedidos, 0);
+  });
+}
+
+test('persistencia: conserva productos válidos, normaliza números y agrupa duplicados', async () => {
+  const almacen = new Map([['sesion-ajena', 'conservar'], ['carrito', JSON.stringify([
+    { id_producto: '7', cantidad: '2', precio: '1250.50', nombre: 'Pizza' },
+    null, { id_producto: 8, cantidad: 0, precio: 100 },
+    { id_producto: 7, cantidad: 1, precio: 1250.50 },
+    { id_producto: true, cantidad: 1, precio: 100 },
+  ])]]);
+  const persistencia = await cargar('src/lib/carrito-local.js', {}, {
+    localStorage: { getItem: k => almacen.get(k), setItem: (k,v) => almacen.set(k,v), removeItem: k => almacen.delete(k) },
+  });
+  const recuperado = persistencia.leerCarrito();
+  assert.equal(recuperado.length, 1);
+  assert.equal(recuperado[0].id_producto, 7);
+  assert.equal(recuperado[0].cantidad, 3);
+  assert.equal(recuperado[0].precio, 1250.50);
+  assert.equal(recuperado[0].nombre, 'Pizza');
+  assert.deepEqual(JSON.parse(almacen.get('carrito')), JSON.parse(JSON.stringify(recuperado)));
+  assert.equal(almacen.get('sesion-ajena'), 'conservar');
+});
+
+test('persistencia: leer, guardar y vaciar toleran almacenamiento inaccesible', async () => {
+  const persistencia = await cargar('src/lib/carrito-local.js', {}, {
+    localStorage: {
+      getItem() { throw new Error('No disponible'); },
+      setItem() { throw new Error('Sin espacio'); },
+      removeItem() { throw new Error('No disponible'); },
+    },
+  });
+  assert.equal(persistencia.leerCarrito().length, 0);
+  assert.equal(persistencia.guardarCarrito(carrito), false);
+  assert.doesNotThrow(() => persistencia.vaciarCarrito());
+});
+
+test('carta: abre y permite buscar aunque el carrito guardado tenga JSON inválido', async () => {
+  const nodos = new Map();
+  const buscar = selector => {
+    if (!nodos.has(selector)) {
+      const nodo = elemento();
+      nodo.replaceChildren = () => {};
+      nodo.querySelectorAll = () => [];
+      nodos.set(selector, nodo);
+    }
+    return nodos.get(selector);
+  };
+  const almacen = new Map([['carrito', '{'], ['otra-clave', 'conservar']]);
+  let consultas = 0;
+  await cargar('src/main.js', {
+    './lib/cache-navegacion.js': { leerCache: () => null, guardarCache() {} },
+    './services/productos.js': { obtenerProductos: async () => { consultas++; return []; } },
+  }, {
+    document: { querySelector: buscar },
+    localStorage: { getItem: k => almacen.get(k), setItem: (k,v) => almacen.set(k,v), removeItem: k => almacen.delete(k) },
+  });
+  assert.equal(consultas, 1);
+  assert.equal(buscar('#lista-productos').textContent, 'No hay productos disponibles.');
+  assert.equal(almacen.has('carrito'), false);
+  assert.equal(almacen.get('otra-clave'), 'conservar');
+  assert.doesNotThrow(() => buscar('#buscar-productos').listeners.input());
+});
+
+test('carrito: conserva los centavos en precio unitario, total y cambio de cantidad', async () => {
+  const pagina = await cargarCarrito(async () => 1, async () => false, JSON.stringify([
+    { id_producto: 7, cantidad: 3, precio: 1250.50, nombre: 'Pizza' },
+  ]));
+  assert.match(pagina.buscar('[data-precio]').textContent, /1\.250,50/);
+  assert.match(pagina.buscar('#total-carrito').textContent, /3\.751,50/);
+  const cantidad = pagina.buscar('[data-input-cantidad]');
+  cantidad.value = '2';
+  cantidad.listeners.change();
+  assert.match(pagina.buscar('#total-carrito').textContent, /2\.501/);
+  assert.doesNotMatch(pagina.buscar('#total-carrito').textContent, /,00/);
+});
+
+test('carrito: actualiza los centavos al cambiar el precio antes de confirmar', async () => {
+  let consultas = 0;
+  let pedidos = 0;
+  const pagina = await cargarCarrito(async () => pedidos++, async items => {
+    consultas++;
+    if (consultas === 2) {
+      items[0].precio = 999.25;
+      return true;
+    }
+    return false;
+  });
+  await pagina.confirmar();
+  assert.equal(pedidos, 0);
+  assert.match(pagina.buscar('[data-precio]').textContent, /999,25/);
+  assert.match(pagina.buscar('#total-carrito').textContent, /1\.998,50/);
+  assert.match(pagina.buscar('#mensaje-pedido').textContent, /precios cambiaron/);
+});
+
+test('platos: respeta longitudes y precisión de las columnas exportadas', async () => {
+  const productos = await cargar('src/services/productos.js', { '../lib/supabase.js': { supabase: {} } }, { URL });
+  const datos = { nombre: 'A'.repeat(100), descripcion: 'Plato demo', precio: '99999999.99', foto: '' };
+  assert.equal(productos.validarProducto(datos).nombre.length, 100);
+  for (const cambios of [{ nombre: 'A'.repeat(101) }, { precio: '100000000' }, { foto: 'https://example.com/' + 'a'.repeat(240) }]) {
+    assert.throws(() => productos.validarProducto({ ...datos, ...cambios }));
+  }
+});
+
+test('cocina: dos pantallas con el mismo estado no sobrescriben el primer cambio', async () => {
+  let estado = 'Pendiente';
+  let consultas = 0;
+  const pedidos = await cargar('src/services/pedidos.js', {
+    '../lib/supabase.js': { supabase: { from() {
+      consultas++;
+      let nuevo, previo;
+      return {
+        update(datos) { nuevo = datos.estado_pedido; return this; },
+        eq(columna, valor) { if (columna === 'estado_pedido') previo = valor; return this; },
+        select() { return this; },
+        async maybeSingle() {
+          if (estado !== previo) return { data: null, error: null };
+          estado = nuevo;
+          return { data: { id_pedido: 1, estado_pedido: estado }, error: null };
+        },
+      };
+    } } },
+    './auth.js': { obtenerUsuarioActual: async () => ({ id: 'cocina' }), exigirRolCocina: async () => {} },
+  });
+  await pedidos.actualizarEstadoPedido(1, 'En preparación', 'Pendiente');
+  await assert.rejects(pedidos.actualizarEstadoPedido(1, 'En preparación', 'Pendiente'), { code: 'PEDIDO_DESACTUALIZADO' });
+  assert.equal(estado, 'En preparación');
+  await assert.rejects(pedidos.actualizarEstadoPedido(1, 'Pendiente', 'En preparación'), /transición/);
+  assert.equal(consultas, 2);
+  await pedidos.actualizarEstadoPedido(1, 'Listo', 'En preparación');
+  assert.equal(estado, 'Listo');
+});
+
+test('carrito: los precios enteros se muestran sin centavos vacíos', async () => {
+  const pagina = await cargarCarrito(async () => 1, async () => false, JSON.stringify([
+    { id_producto: 7, cantidad: 1, precio: 8700, nombre: 'Pizza' },
+  ]));
+  assert.match(pagina.buscar('[data-precio]').textContent, /8\.700/);
+  assert.doesNotMatch(pagina.buscar('[data-precio]').textContent, /,00/);
+  assert.doesNotMatch(pagina.buscar('#total-carrito').textContent, /,00/);
+});
