@@ -108,17 +108,18 @@ export function validarProducto(datos) {
   const descripcion = datos.descripcion.trim();
   const precio = Number(datos.precio);
   const foto = datos.foto?.trim() || null;
-  if (!nombre || nombre.length > 150)
-    throw new Error("Ingresá un nombre de hasta 150 caracteres.");
+  if (!nombre || nombre.length > 100)
+    throw new Error("Ingresá un nombre de hasta 100 caracteres.");
   if (!descripcion || descripcion.length > 2000)
     throw new Error("Ingresá una descripción de hasta 2000 caracteres.");
   if (
     !Number.isFinite(precio) ||
-    precio <= 0 ||
+    precio <= 0 || precio > 99999999.99 ||
     Math.abs(precio * 100 - Math.round(precio * 100)) > 0.000001
   ) {
-    throw new Error("Ingresá un precio mayor a cero, con hasta dos decimales.");
+    throw new Error("Ingresá un precio mayor a cero, con hasta dos decimales y un máximo de 99999999.99.");
   }
+  if (foto && foto.length > 255) throw new Error("La URL de la imagen admite hasta 255 caracteres.");
   if (foto) {
     let url;
     try {

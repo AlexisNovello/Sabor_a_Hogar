@@ -18,7 +18,7 @@
       <div
         class="max-w-6xl mx-auto p-6 flex flex-col gap-4 xl:flex-row xl:justify-between xl:items-center"
       >
-        <h1 class="text-3xl font-bold">Sabor a Hogar</h1>
+        <h1 class="text-3xl font-bold"><a href="index.html">Sabor a Hogar</a></h1>
 
         <nav
           aria-label="Cuenta y navegación"
@@ -114,8 +114,10 @@
         </button>
       </form>
       </div>
+      <p id="mensaje-carga-carta" class="mt-4" role="status" aria-live="polite"></p>
+      <button id="reintentar-carta" type="button" class="hidden mt-2 rounded-md bg-red-600 px-4 py-2 font-semibold text-white disabled:opacity-50">Reintentar</button>
       <!-- Lista de Productos -->
-      <div id="lista-productos" class="mt-6 grid grid-cols-3 gap-6"></div>
+      <div id="lista-productos" class="mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
       <!-- Plantilla de cada producto -->
       <template id="plantilla-producto">
         <article class="border rounded-lg p-4 flex flex-col">

@@ -77,16 +77,14 @@ Catálogo conectado a Supabase, carrito persistido en el navegador, creación de
 - Al confirmar un carrito sin sesión se abre el login; después de ingresar se vuelve al carrito con sus productos. El cliente debe confirmar nuevamente: iniciar sesión no crea un pedido automáticamente.
 - Antes de llamar a `crear_pedido`, se verifica el usuario con Supabase Auth. Se mantiene el contrato actual: `{ productos: [{ id_producto, cantidad }] }`. Los precios no se envían desde el navegador.
 - El cierre de sesión conserva el carrito de este navegador. El carrito no está separado por cuenta; en dispositivos compartidos, revisá sus productos antes de confirmar.
-- Las rutas antiguas `/contraseña.html` y `/registrocliente.html` redirigen a las nuevas pantallas.
+- Las pantallas de acceso actuales son `login.html` y `registro.html`; las rutas antiguas se eliminaron.
 - La compilación incluye todas las páginas HTML de la raíz. La única modalidad de los pedidos es el retiro en el local.
 
-### Configuración pendiente de verificar en Supabase
+### Configuración de Supabase
 
-El SQL disponible, las migraciones y las instrucciones para exportar la configuración se encuentran en [supabase/README.md](supabase/README.md). La copia inicial todavía no permite reconstruir una base vacía. El registro envía nombre, apellido, DNI, teléfono y dirección como metadata a Supabase Auth; la creación del perfil en `public.usuario` depende del trigger existente en la base de datos. Hay que verificar que sus columnas y el vínculo con `auth.users.id` sean compatibles.
+El SQL y las migraciones están documentados en [supabase/README.md](supabase/README.md). La configuración exportada y revisada el 15 de noviembre de 2026 confirmó RLS en las seis tablas y permisos restringidos por rol. El trigger de registro crea el perfil vinculado a Auth con rol cliente; crear_pedido obtiene la identidad desde auth.uid(), rechaza visitantes y cuentas bloqueadas, calcula precios en la base y descuenta stock en transacción. Esto se verificó en el archivo exportado; quedan pendientes las pruebas con cuentas reales.
 
-En Authentication, verificá que el proveedor Email esté habilitado, la confirmación de correo tenga la configuración deseada y las URL del sitio y de redirección correspondan al entorno donde se prueba o publica.
-
-La función `crear_pedido` debe obtener la identidad desde `auth.uid()`, rechazar visitantes y asociar el pedido con su usuario. También debe validar cantidades, precios y stock en el servidor. Las políticas RLS y permisos deben limitar la lectura y modificación de pedidos, stock y administración según el rol. La comprobación de sesión del frontend no reemplaza esos permisos. No se modificó la base de datos ni se añadieron controles de roles administrativos sin conocer su esquema.
+Todavía no hay una instalación desde cero probada. Tampoco se verificaron los permisos de Storage ni la configuración de Auth. En Authentication, comprobá proveedor Email, confirmación de correo y URL del sitio y de redirección para el entorno publicado.
 
 ## Verificación
 

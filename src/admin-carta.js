@@ -3,7 +3,7 @@ import { obtenerTodosLosProductos, actualizarPublicacionProducto } from './servi
 const lista = document.querySelector('#lista-carta-admin')
 const plantilla = document.querySelector('#plantilla-item-carta-admin')
 const mensaje = document.querySelector('#mensaje-carta')
-const formatoPrecio = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })
+const formatoPrecio = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 2, maximumFractionDigits: 2, trailingZeroDisplay: "stripIfInteger" })
 
 async function cargarCarta() {
   try {

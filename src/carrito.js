@@ -1,10 +1,10 @@
+import { leerCarrito, guardarCarrito, vaciarCarrito } from './lib/carrito-local.js';
 import { crearPedido } from "./services/pedidos.js";
 import { irAlLogin } from "./lib/destino-login.js";
 import { actualizarPreciosCarrito } from './services/precios-carrito.js';
 
 // trae los productos guardados en el navegador
-const carritoGuardado = localStorage.getItem("carrito");
-const carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
+const carrito = leerCarrito();
 
 const lista = document.querySelector("#lista-carrito");
 const plantilla = document.querySelector("#plantilla-item-carrito");
@@ -15,7 +15,7 @@ const preciosEnPantalla = new Map();
 
 async function sincronizarPrecios() {
   const cambios = await actualizarPreciosCarrito(carrito);
-  if (carrito.length) localStorage.setItem('carrito', JSON.stringify(carrito));
+  if (carrito.length) guardarCarrito(carrito);
   for (const item of carrito) {
     const etiqueta = preciosEnPantalla.get(item.id_producto);
     if (etiqueta) etiqueta.textContent = formatoPrecio.format(item.precio);
@@ -32,7 +32,7 @@ if (carrito.length === 0) {
 const formatoPrecio = new Intl.NumberFormat("es-AR", {
   style: "currency",
   currency: "ARS",
-  maximumFractionDigits: 0,
+  minimumFractionDigits: 2, maximumFractionDigits: 2, trailingZeroDisplay: "stripIfInteger",
 });
 
 try {
@@ -69,7 +69,7 @@ for (const producto of carrito) {
     if (posicion !== -1) {
       carrito.splice(posicion, 1);
 
-      localStorage.setItem("carrito", JSON.stringify(carrito));
+      guardarCarrito(carrito);
 
       tarjeta.remove();
       actualizarTotal();
@@ -104,14 +104,14 @@ for (const producto of carrito) {
     if (guardando) return;
     const nuevaCantidad = Number(inputCantidad.value);
 
-    if (!Number.isInteger(nuevaCantidad) || nuevaCantidad < 1) {
+    if (!Number.isInteger(nuevaCantidad) || nuevaCantidad < 1 || nuevaCantidad > 2147483647) {
       inputCantidad.value = producto.cantidad;
       return;
     }
 
     producto.cantidad = nuevaCantidad;
 
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+    guardarCarrito(carrito);
     actualizarTotal();
   });
 
@@ -170,7 +170,7 @@ botonConfirmar.addEventListener("click", async () => {
     const idPedido = await crearPedido(carrito);
 
     //limpiar el carrito solamente despuees de guardar
-    localStorage.removeItem("carrito");
+    vaciarCarrito();
     carrito.length = 0;
 
     lista.textContent = "Los productos de tu pedido ya fueron enviados.";

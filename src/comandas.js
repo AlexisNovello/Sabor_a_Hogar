@@ -121,10 +121,12 @@ async function cargarComandas() {
 
         botonEstado.textContent = "Guardando...";
 
+        let recargar = false;
         try {
           const pedidoActualizado = await actualizarEstadoPedido(
             pedido.id_pedido,
             nuevoEstado,
+            pedido.estado_pedido,
           );
 
           // actualiza la pantalla después de confirmar el cambio
@@ -141,8 +143,10 @@ async function cargarComandas() {
             textoEstado.textContent = pedido.estado_pedido;
           }
         } catch (error) {
+          recargar = error.code === 'PEDIDO_DESACTUALIZADO';
           console.error("No se pudo actualizar el pedido:", error);
-          alert("No se pudo cambiar el estado. Intentá nuevamente.");
+          alert(error.code === 'PEDIDO_DESACTUALIZADO'
+            ? error.message : 'No se pudo cambiar el estado. Intentá nuevamente.');
         } finally {
           guardandoEstado = false;
           actualizarBotonEstado();
@@ -152,6 +156,7 @@ async function cargarComandas() {
             boton.disabled = false;
           });
         }
+        if (recargar) await cargarComandas();
       });
 
       // inserta cada tarjeta a la lista
